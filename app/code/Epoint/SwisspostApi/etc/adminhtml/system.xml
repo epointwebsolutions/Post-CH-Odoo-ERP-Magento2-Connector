@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="epoint" translate="label" sortOrder="100">
+            <label>Epoint SwissPost API</label>
+        </tab>
+        <section id="swisspostapi" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>API Connection</label>
+            <tab>epoint</tab>
+            <resource>Epoint_Swisspostapi::api_configuration</resource>
+            <group id="connection" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>API connection</label>
+                <field id="base_location" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Base location</label>
+                    <comment>Is the base url of the Odoo ERP server. Information is provided by the SwissPost</comment>
+                </field>
+                <field id="jsonrpc" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>JSONRpc version</label>
+                    <comment>The used version of the remote procedure call (RPC) protocol. This information is provided by the SwissPost in connection information.</comment>
+                </field>
+                <field id="shop_ident" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Shop identifier</label>
+                    <comment>Is a shop identifier, a string representing the webshop. This information is provided by the SwissPost in connection information.</comment>
+                </field>
+                <field id="login" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Login</label>
+                    <comment>Is the user to be used to connect to the ERP. This information is provided by the SwissPost in connection information.</comment>
+                </field>
+                <field id="password" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Password</label>
+                    <comment>Is the password needed for Login. This information is provided by the SwissPost in connection information.</comment>
+                </field>
+                <field id="db" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Database</label>
+                    <comment>The name of the used database. This information is provided by the SwissPost in connection information.</comment>
+                </field>
+                <field id="timeout" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Timeout connection</label>
+                    <comment>How much time the API client will wait for ERP server response. Default value is set to 15s.</comment>
+                </field>
+            </group>
+            <group id="logging" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>API logging</label>
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable logging</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Enable logging on API communication.</comment>
+                </field>
+                <field id="file" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Log file</label>
+                    <comment>Set log file name. If is missing, system log file will be used.</comment>
+                </field>
+                <field id="debug_logging_emails" translate="label" type="textarea" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Debug - Logging Email(s)</label>
+                    <comment>If the logging is enabled, both successful and failed requests will be sent to the provided email(s). If more than one email wants to be used, then the emails must be separated by commas.</comment>
+                </field>
+                <field id="error_logging_emails" translate="label" type="textarea" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Error - Logging Email(s)</label>
+                    <comment>If the logging is enabled, the failed requests will be sent to the provided email(s). If more than one email wants to be used, then the emails must be separated by commas.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

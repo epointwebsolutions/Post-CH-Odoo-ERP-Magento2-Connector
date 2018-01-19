@@ -1,0 +1,13 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="export-orders" instance="Epoint\SwisspostSales\Model\Cron\Order" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="import-orders-payment-status" instance="Epoint\SwisspostSales\Model\Cron\PaymentStatus" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+        <job name="import-orders-transfer-status" instance="Epoint\SwisspostSales\Model\Cron\TransferStatus" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+    </group>
+</config>

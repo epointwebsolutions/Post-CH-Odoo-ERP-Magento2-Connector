@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="swisspostcatalog" translate="label" sortOrder="150" showInDefault="1" showInWebsite="0" showInStore="1">
+            <class>separator-top</class>
+            <label>Catalog</label>
+            <tab>epoint</tab>
+            <resource>Epoint_Swisspostcatalog::configuration</resource>
+            <group id="category" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="1">
+                <label>Category</label>
+                <field id="enable_import" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable category cron import.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable category import.</comment>
+                </field>
+                <field id="local_root" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Local root category.</label>
+                    <comment>The selected local root category, will be mapped with the External(Odoo) selected root category.</comment>
+                    <source_model>Epoint\SwisspostCatalog\Model\Config\Source\Category\Tree</source_model>
+                </field>
+                <field id="external_root" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>External root category.</label>
+                    <comment>The selected external root category, will be mapped with the Local(magento) selected root category.</comment>
+                    <source_model>Epoint\SwisspostApi\Model\Api\Config\Source\Category\Tree</source_model>
+                </field>
+                <field id="language" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="1">
+                    <label>Language</label>
+                    <comment>The language code. Language can be set for each store. Depending on the store language selection, the category will be mapped on each store, with data defined for selected language</comment>
+                    <source_model>Epoint\SwisspostApi\Model\Api\Config\Source\Language\Code</source_model>
+                </field>
+            </group>
+            <group id="product" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product</label>
+                <field id="enable_import" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable product cron import.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable product import.</comment>
+                </field>
+                <field id="import_limit" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Product import limit</label>
+                    <validate>validate-digits validate-zero-or-greater</validate>
+                    <comment>Limit number of returned products (default: 0, meaning all products are returned).</comment>
+                </field>
+                <field id="enable_import_images" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable image import.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable product image import.</comment>
+                </field>
+                <field id="language" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Language</label>
+                    <comment>The language code. Can be set on each store. Depending on the store language selection, the product will be mapped on each store, with data defined for selected language</comment>
+                    <source_model>Epoint\SwisspostApi\Model\Api\Config\Source\Language\Code</source_model>
+                </field>
+            </group>
+            <group id="inventory" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Inventory</label>
+                <field id="enable_import" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable inventory cron import.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable inventory import.</comment>
+                </field>
+                <field id="enable_import_images" translate="label" type="select" sortOrder="1" showInDefault="0" showInWebsite="0" showInStore="0">
+                    <label>Enable image import.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable updating the product inventory using cron.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

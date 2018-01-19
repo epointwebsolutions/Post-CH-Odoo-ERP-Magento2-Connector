@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="createUpdateAccount" xsi:type="object">Epoint\SwisspostCustomer\Console\Command\createUpdateAccountCommand</item>
+                <item name="searchReadAccount" xsi:type="object">Epoint\SwisspostCustomer\Console\Command\searchReadAccountCommand</item>
+                <item name="createUpdateAddress" xsi:type="object">Epoint\SwisspostCustomer\Console\Command\createUpdateAddressCommand</item>
+                <item name="searchReadAddress" xsi:type="object">Epoint\SwisspostCustomer\Console\Command\searchReadAddressCommand</item>
+                <item name="checkCustomerCredit" xsi:type="object">Epoint\SwisspostCustomer\Console\Command\checkCustomerCreditCommand</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

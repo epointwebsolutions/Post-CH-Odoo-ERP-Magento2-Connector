@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="swisspostsales" translate="label" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Sales</label>
+            <tab>epoint</tab>
+            <resource>Epoint_Swisspostsales::configuration</resource>
+
+
+            <!--Order export related fields-->
+            <group id="order" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Order</label>
+                <field id="enable_export" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable order cron export.</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable order export. Orders from guest customers will be exported to Odoo only through cron or manually, using Odoo Export option, from order details page.</comment>
+                </field>
+                <field id="filter_status" translate="label" type="multiselect" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Export order status.</label>
+                    <comment>One or more statuses can be selected. For multiple selection use CTRL+left click on the order status. The selected status(es) will be used to filter orders for Odoo export.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="successful_export_status" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>New status after successful export.</label>
+                    <comment>The selected status will be the new order status, if the Odoo order export action was successful.</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+                <field id="failure_export_status" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>New status after failure export.</label>
+                    <comment>The selected status will be the new order status, if the Odoo order export action failed</comment>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                </field>
+            </group>
+
+
+            <!--Sales Product Order Line - Tax mapping-->
+            <group id="product_tax_mapping" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Sales Product Order Line</label>
+                <field id="default_product_tax_mapping" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Odoo tax class</label>
+                    <validate>required-entry</validate>
+                    <comment>The mapping configuration must have a default value, used for the case when the mapping of selected tax class, is missing.</comment>
+                </field>
+                <field id="dynamic_product_tax_mapping" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Mapping</label>
+                    <frontend_model>Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicTaxClassMapping</frontend_model>
+                    <backend_model>Epoint\SwisspostSales\Model\System\Config\DynamicMapping</backend_model>
+                    <comment>
+                        For mapping local tax class with the odoo correspondence click "Add" button and fill the fields.
+                        For Local Tax Class select from the drop-down list the defined tax class and then enter manually the Odoo corresponding tax code.
+                    </comment>
+                </field>
+            </group>
+
+
+            <!--Dynamic mapping the PAYMENT ODOO CODES-->
+            <group id="payments_mapping" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Dynamic Payments Mapping</label>
+                <field id="default_payments_mapping" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Odoo method</label>
+                    <validate>required-entry</validate>
+                    <comment>The mapping configuration must have a default value, used for the case when the mapping of selected payment method, is missing.</comment>
+                </field>
+                <field id="dynamic_payments_mapping" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Mapping</label>
+                    <frontend_model>Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicPaymentsMapping</frontend_model>
+                    <backend_model>Epoint\SwisspostSales\Model\System\Config\DynamicMapping</backend_model>
+                    <comment>
+                        For mapping local payment method with the odoo correspondence click "Add" button and fill the fields.
+                        For Local Payment select from the drop-down list the payment method and then enter manually the Odoo corresponding code.
+                    </comment>
+                </field>
+            </group>
+
+
+            <!--Import Payment Status-->
+            <group id="import_payment" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Import Payment Status</label>
+                <field id="import_payment_cron" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable payment status cron import</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable order payment status import.</comment>
+                </field>
+                <field id="import_payment_order_status" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order status</label>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                    <comment>The selected status will be used to filter orders for payment status update.</comment>
+                </field>
+            </group>
+
+
+            <!--Print Invoice related-->
+            <group id="order_invoice" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Print Invoice</label>
+                <field id="odoo_invoice" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Printing Invoice Report(s) from Odoo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Return the PDF of the invoice report(s) for a sale order from Odoo.</comment>
+                </field>
+            </group>
+
+
+            <!--Dynamic mapping the SHIPPING ODOO CODES-->
+            <group id="shipping_mapping" translate="label" type="text" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Dynamic Shipping Mapping</label>
+                <field id="default_shipping_mapping" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Default Odoo method</label>
+                    <validate>required-entry</validate>
+                    <comment>The mapping configuration must have a default value, used for the case when the mapping of selected shipping method, is missing.</comment>
+                </field>
+                <field id="dynamic_shipping_mapping" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Mapping</label>
+                    <frontend_model>Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicShippingMapping</frontend_model>
+                    <backend_model>Epoint\SwisspostSales\Model\System\Config\DynamicMapping</backend_model>
+                    <comment>
+                        For mapping local shipping method with the odoo correspondence click "Add" button and fill the fields.
+                        For Local Shipping select from the drop-down list the shipping method and then enter manually the Odoo corresponding code.
+                    </comment>
+                </field>
+            </group>
+
+
+            <!--Import Transfer Status-->
+            <group id="import_transfer" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Import Transfer Status</label>
+                <field id="import_transfer_cron" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable transfer status cron import</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable order transfer status import.</comment>
+                </field>
+                <field id="import_transfer_order_status" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Order status</label>
+                    <source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+                    <comment>The selected status will be used to filter orders for transfer status update.</comment>
+                </field>
+            </group>
+
+
+            <!--Enable print delivery reports from odoo-->
+            <group id="order_shipping_docs" translate="label" type="text" sortOrder="8" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Print Delivery Report(s)</label>
+                <field id="odoo_shipping_docs" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable Printing Delivery Report(s) from Odoo</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Return the PDF of the delivery report(s) for a sale order.</comment>
+                </field>
+            </group>
+
+
+            <!--Export Gift Cards-->
+            <group id="order_gift_cards" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Gift Cards</label>
+                <field id="coupon_as_gift_card" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Enable export order coupon as Gift Card</label>
+                    <source_model>Magento\Config\Model\Config\Source\Enabledisable</source_model>
+                    <comment>Enable or disable the export of the coupon as gift card.</comment>
+                </field>
+            </group>
+
+            <!--Dynamic mapping the CUSTOMER GROUPS-->
+            <group id="customer_groups_mapping" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Dynamic Customer Groups Mapping</label>
+                <field id="dynamic_customer_groups_mapping" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Mapping</label>
+                    <frontend_model>Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicCustomerGroupsMapping</frontend_model>
+                    <backend_model>Epoint\SwisspostSales\Model\System\Config\DynamicMapping</backend_model>
+                    <comment>
+                        For mapping local customer group with the odoo correspondence click "Add" button and fill the fields.
+                        For Local Customer Group select from the drop-down list the customer group and then enter manually the Odoo corresponding value.
+                    </comment>
+                </field>
+            </group>
+
+        </section>
+    </system>
+</config>

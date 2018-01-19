@@ -1,0 +1,21 @@
+<!--@subject {{trans "%request_status" request_status=$data.subject}} @-->
+
+<div>
+    <div>
+        <h2>
+            {{trans "DEBUG -----------------"}}
+        </h2>
+    </div>
+    <div>
+        <pre>{{trans "%debug_message" debug_message=$data.debug_message}}</pre>
+    </div>
+
+    <div>
+        <h2>
+            {{trans "RECEIVED DATA -----------------"}}
+        </h2>
+    </div>
+    <div>
+        <pre>{{trans "%result" result=$data.result}}</pre>
+    </div>
+</div>

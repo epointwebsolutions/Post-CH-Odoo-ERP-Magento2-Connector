@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandList">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="getProducts" xsi:type="object">Epoint\SwisspostCatalog\Console\Command\getProductsCommand</item>
+                <item name="getProductCategories" xsi:type="object">Epoint\SwisspostCatalog\Console\Command\getProductCategoriesCommand</item>
+                <item name="getInventory" xsi:type="object">Epoint\SwisspostCatalog\Console\Command\getInventoryCommand</item>
+                <item name="importCategories" xsi:type="object">Epoint\SwisspostCatalog\Console\Command\importCategoriesCommand</item>
+                <item name="importProducts" xsi:type="object">Epoint\SwisspostCatalog\Console\Command\importProductsCommand</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>
+

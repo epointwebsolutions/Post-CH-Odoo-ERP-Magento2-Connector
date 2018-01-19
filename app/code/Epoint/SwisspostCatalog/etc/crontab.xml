@@ -1,0 +1,13 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job name="import-categories" instance="Epoint\SwisspostCatalog\Model\Cron\Category" method="execute">
+            <schedule>0 */24 * * *</schedule>
+        </job>
+        <job name="import-products" instance="Epoint\SwisspostCatalog\Model\Cron\Product" method="execute">
+            <schedule>0 */24 * * *</schedule>
+        </job>
+        <job name="import-inventory-cron" instance="Epoint\SwisspostCatalog\Model\Cron\Inventory" method="execute">
+            <schedule>*/15 * * * *</schedule>
+        </job>
+    </group>
+</config>
