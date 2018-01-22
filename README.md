@@ -1,4 +1,4 @@
-# Post-CH-Odoo-ERP-Magento2-Connector
+# SwissPost ERP - Magento2 Connector
 
 <p>Swiss Post is consolidating its core business (logistics) by offering integrated software solutions. For a better service it has upgraded its ERP solution, on an Odoo open source framework and in order to offer a more easy onboarding for e-commerce customers, we developed an open source connector between Odoo and Magento.</p>
 
