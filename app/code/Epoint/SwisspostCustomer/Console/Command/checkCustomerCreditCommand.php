@@ -83,13 +83,21 @@ class checkCustomerCreditCommand extends Command
         }
 
         // Perform credit check operation
-        $values = $this->accountModelApi->checkCustomerCredit($customerID, $creditAmount);
-
-        if ($values) {
-            $output->writeln(sprintf(__('Swisspost API check customer credit successful, result: %s'),
-                json_encode($values)));
+        $result = $this->accountModelApi->checkCustomerCredit($customerID, $creditAmount);
+        if ($result->isOk() && $result->get('check_ok') === true) {
+            $output->writeln(
+                sprintf(
+                    __('Swisspost API check customer credit successful, result: %s'),
+                    $result->get('comment')
+                )
+            );
         } else {
-            $output->writeln(sprintf(__('Swisspost API check customer credit result no values')));
+            $output->writeln(
+                sprintf(
+                    __('Swisspost API check customer credit unsuccessful, result: %s'),
+                    $result->get('comment')
+                )
+            );
         }
     }
 }
