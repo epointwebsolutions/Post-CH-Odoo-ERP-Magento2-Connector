@@ -242,7 +242,7 @@ class Account extends ApiDataObject
      * @param $customerID
      * @param $creditAmount
      *
-     * @return bool
+     * @return \Epoint\SwisspostApi\Helper\Api\Curl\Result|\Epoint\SwisspostApi\Helper\Api\result
      */
     public function checkCustomerCredit($customerID, $creditAmount)
     {
@@ -251,11 +251,7 @@ class Account extends ApiDataObject
             'account_ref' => $this->getReferenceId($customerID),
             'amount'      => (float)$creditAmount
         ];
-        // Odoo -> verify if the customer has credit
-        $result = $this->apiResource->checkCustomerCredit($filter);
-        if ($result->isOk() && $result->get('check_ok') === true) {
-            return true;
-        }
-        return false;
+        
+        return $this->apiResource->checkCustomerCredit($filter);
     }
 }
