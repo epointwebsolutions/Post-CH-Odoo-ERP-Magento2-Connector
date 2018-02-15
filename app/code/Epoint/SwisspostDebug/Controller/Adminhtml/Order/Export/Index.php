@@ -56,9 +56,9 @@ class Index extends \Magento\Backend\App\Action
 
         try {
             $processed = $this->orderService->run([$localOrder]);
-            foreach ($processed as $processedOrder){
+            foreach ($processed as $processedOrder) {
                 // Checking if on selected order export the response has failed or not
-                if ($processedOrder->getIsOdooResponseError()){
+                if ($processedOrder->getIsOdooResponseError()) {
                     // Displaying the saved message after the export took place
                     $this->messageManager->addErrorMessage($processedOrder->getResponseMessage());
                 } else {

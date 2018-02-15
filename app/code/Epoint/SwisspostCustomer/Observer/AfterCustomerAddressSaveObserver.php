@@ -3,6 +3,7 @@
  * Copyright © 2013-2017 Epoint, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Epoint\SwisspostCustomer\Observer;
 
 use \Magento\Framework\ObjectManagerInterface;
@@ -23,9 +24,9 @@ class AfterCustomerAddressSaveObserver extends BaseObserver
     /**
      * AfterCustomerAddressSaveObserver constructor.
      *
-     * @param LoggerInterface   $logger
+     * @param LoggerInterface        $logger
      * @param ObjectManagerInterface $objectManager
-     * @param ApiModelAddress   $apiModelAddress
+     * @param ApiModelAddress        $apiModelAddress
      */
     public function __construct(
         LoggerInterface $logger,
@@ -40,6 +41,7 @@ class AfterCustomerAddressSaveObserver extends BaseObserver
      * Handler for 'customer_address_save_after' event.
      *
      * @param \Magento\Framework\Event\Observer $observer
+     *
      * @return void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -47,9 +49,9 @@ class AfterCustomerAddressSaveObserver extends BaseObserver
         /** @var \Magento\Customer\Model\Address $address */
         $address = $observer->getEvent()->getCustomerAddress();
         $addressModel = $this->apiModelAddress->getInstance($address);
-        try{
+        try {
             $result = $addressModel->save();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->logException($e);
         }
     }

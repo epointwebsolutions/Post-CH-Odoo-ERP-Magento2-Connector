@@ -1,4 +1,5 @@
 <?php
+
 namespace Epoint\SwisspostSales\Model\Lists;
 
 use \Magento\Sales\Model\ResourceModel\Order\CollectionFactory;
@@ -46,13 +47,16 @@ class Order
     {
         $collection = $this->collectionFactory->create();
         $collection->addAttributeToSelect('*');
-        $collection->getSelect()->where(' CONVERT(main_table.increment_id, CHAR(32)) NOT IN 
-        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '")');
+        $collection->getSelect()->where(
+            ' CONVERT(main_table.increment_id, CHAR(32)) NOT IN 
+        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '")'
+        );
 
         // Add status filter.
-        if($acceptedStatus = $this->helperOrder->getCronExportOrderConfigStatus()){
-            $collection->addFieldToFilter(self::STATUS_FILTER_ATTRIBUTE_CODE,
-                ['in'=>$acceptedStatus]
+        if ($acceptedStatus = $this->helperOrder->getCronExportOrderConfigStatus()) {
+            $collection->addFieldToFilter(
+                self::STATUS_FILTER_ATTRIBUTE_CODE,
+                ['in' => $acceptedStatus]
             );
         }
         $collection->load();
@@ -70,14 +74,17 @@ class Order
     {
         $collection = $this->collectionFactory->create();
         $collection->addAttributeToSelect('*');
-        $collection->getSelect()->where(' CONVERT(main_table.increment_id, CHAR(32)) IN 
-        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '")');
+        $collection->getSelect()->where(
+            ' CONVERT(main_table.increment_id, CHAR(32)) IN 
+        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '")'
+        );
 
         // Add status filter.
-        if(!empty($orderStatus)){
-           $collection->addFieldToFilter(self::STATUS_FILTER_ATTRIBUTE_CODE,
-               ['in'=>$orderStatus]
-           );
+        if (!empty($orderStatus)) {
+            $collection->addFieldToFilter(
+                self::STATUS_FILTER_ATTRIBUTE_CODE,
+                ['in' => $orderStatus]
+            );
         }
         $collection->load();
         return $collection;

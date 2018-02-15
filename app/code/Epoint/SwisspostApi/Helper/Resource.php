@@ -8,23 +8,22 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\ObjectManagerInterface;
 use Epoint\SwisspostApi\Model\Api\Account;
-use Epoint\SwisspostApi\Helper\Data as Data;
 use Epoint\SwisspostApi\Helper\Api\Resource As SwisspostResource;
 use Epoint\SwisspostApi\Helper\Api\Curl\Client As SwisspostClient;
 
 class Resource extends Data implements SwisspostResource
 {
     /**
-     * @var SwisspostClient
+     * @var \Epoint\SwisspostApi\Helper\Api\Curl\Client
      */
     protected $client;
 
     /**
      * Resource constructor.
      *
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Epoint\SwisspostApi\Helper\ObjectManagerInterface $objectManager
-     * @param \Epoint\SwisspostApi\Helper\StoreManagerInterface $storeManager
+     * @param Context                $context
+     * @param ObjectManagerInterface $objectManager
+     * @param StoreManagerInterface  $storeManager
      */
     public function __construct(
         Context $context,
@@ -32,42 +31,54 @@ class Resource extends Data implements SwisspostResource
         StoreManagerInterface $storeManager
     ) {
         parent::__construct($context, $objectManager, $storeManager);
+    }
+
+    /**
+     * Instantiate client
+     */
+    private function instantiateClient()
+    {
+        if ($this->client !== null) {
+            return;
+        }
+
         $tmpDir = sys_get_temp_dir();
         $fileSystem = $this->objectManager->create('\Magento\Framework\Filesystem');
-        if($fileSystem) {
+        if ($fileSystem) {
             $tmpDir = $fileSystem->getDirectoryRead(\Magento\Framework\App\Filesystem\DirectoryList::TMP)->getAbsolutePath();
         }
-        if(!$this->getConnectionConfig('base_location')){
+
+        if (!$this->getConnectionConfig('base_location')) {
             throw new \Exception(__('Missing API connection url, please configure it.'));
         }
-        if(!$this->getConnectionConfig('shop_ident')){
+        if (!$this->getConnectionConfig('shop_ident')) {
             throw new \Exception(__('Missing API shop_ident, please configure it.'));
         }
-        if(!$this->getConnectionConfig('base_location')){
+        if (!$this->getConnectionConfig('base_location')) {
             throw new \Exception(__('Missing API base_location, please configure it.'));
         }
-        if(!$this->getConnectionConfig('db')){
+        if (!$this->getConnectionConfig('db')) {
             throw new \Exception(__('Missing API database, please configure it.'));
         }
-        if(!$this->getConnectionConfig('login')){
+        if (!$this->getConnectionConfig('login')) {
             throw new \Exception(__('Missing API login, please configure it.'));
         }
-        if(!$this->getConnectionConfig('password')){
+        if (!$this->getConnectionConfig('password')) {
             throw new \Exception(__('Missing API password, please configure it.'));
         }
         // Add config.
         $config = [
-            'jsonrpc' => $this->getConnectionConfig('jsonrpc'),
-            'shop_ident' => $this->getConnectionConfig('shop_ident'),
+            'jsonrpc'       => $this->getConnectionConfig('jsonrpc'),
+            'shop_ident'    => $this->getConnectionConfig('shop_ident'),
             'base_location' => $this->getConnectionConfig('base_location'),
-            'db' => $this->getConnectionConfig('db'),
-            'login' => $this->getConnectionConfig('login'),
-            'password' => $this->getConnectionConfig('password'),
-            'tmp_dir' => $tmpDir,
-            'logger' => $this->_logger,
-            'timeout' => MAX($this->getConnectionConfig('timeout'), 15),
+            'db'            => $this->getConnectionConfig('db'),
+            'login'         => $this->getConnectionConfig('login'),
+            'password'      => $this->getConnectionConfig('password'),
+            'tmp_dir'       => $tmpDir,
+            'logger'        => $this->_logger,
+            'timeout'       => MAX($this->getConnectionConfig('timeout'), 15),
         ];
-        /* @var Epoint\SwisspostApi\Helper\Api\Client $client */
+        /* @var \Epoint\SwisspostApi\Helper\Api\Client $client */
         $this->client = new SwisspostClient($config);
     }
 
@@ -76,6 +87,7 @@ class Resource extends Data implements SwisspostResource
      */
     public function sessionGetInfo()
     {
+        $this->instantiateClient();
         return $this->client->call('web/session/get_session_info');
     }
 
@@ -84,6 +96,7 @@ class Resource extends Data implements SwisspostResource
      */
     public function sessionAuthenticate()
     {
+        $this->instantiateClient();
         $this->client->connect();
         return $this->client->getLastResult();
     }
@@ -96,10 +109,12 @@ class Resource extends Data implements SwisspostResource
      */
     protected function ApiCall($methdod, $data)
     {
+        $this->instantiateClient();
         $result = $this->client->call($methdod, $data);
         if (!$result->isOK()) {
             $this->_logger->error(
-                sprintf(__('Swisspost API error on method: %s, response: %s')
+                sprintf(
+                    __('Swisspost API error on method: %s, response: %s')
                     ,
                     $methdod,
                     $result->getDebugMessage()
@@ -114,7 +129,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function createUpdateAccount(Account $account)
     {
-        return $this->ApiCall('ecommerce_api_v2/create_update_account',
+        return $this->ApiCall(
+            'ecommerce_api_v2/create_update_account',
             ['account' => $account->getData()]
         );
     }
@@ -124,7 +140,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function createSalesOrder(SaleOrder $order)
     {
-        return $this->ApiCall('ecommerce_api_v2/create_sale_order',
+        return $this->ApiCall(
+            'ecommerce_api_v2/create_sale_order',
             ['sale_order' => $order->getData()]
         );
     }
@@ -134,7 +151,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function createUpdateAddress(Address $address)
     {
-        return $this->ApiCall('ecommerce_api_v2/create_update_address',
+        return $this->ApiCall(
+            'ecommerce_api_v2/create_update_address',
             ['address' => $address->getData()]
         );
     }
@@ -144,15 +162,16 @@ class Resource extends Data implements SwisspostResource
      */
     public function searchReadAccount($filter)
     {
-        if(!isset($filter['filters'])){
+        if (!isset($filter['filters'])) {
             $filter['filters'] = [];
         }
 
-        if(!isset($filter['fields'])){
+        if (!isset($filter['fields'])) {
             $filter['fields'] = [];
         }
 
-        return $this->ApiCall('ecommerce_api_v2/search_read_account',
+        return $this->ApiCall(
+            'ecommerce_api_v2/search_read_account',
             $filter
         );
     }
@@ -169,7 +188,8 @@ class Resource extends Data implements SwisspostResource
         if (!isset($filter['fields'])) {
             $filter['fields'] = [];
         }
-        return $this->ApiCall('ecommerce_api_v2/search_read_address',
+        return $this->ApiCall(
+            'ecommerce_api_v2/search_read_address',
             $filter
         );
     }
@@ -177,15 +197,17 @@ class Resource extends Data implements SwisspostResource
     /**
      * @inheritdoc
      */
-    public function getProducts($filter) {
-        if(!isset($filter['filters'])){
+    public function getProducts($filter)
+    {
+        if (!isset($filter['filters'])) {
             $filter['filters'] = [];
         }
 
-        if(!isset($filter['fields'])){
+        if (!isset($filter['fields'])) {
             $filter['fields'] = [];
         }
-        return $this->ApiCall('ecommerce_api_v2/get_products',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_products',
             $filter
         );
     }
@@ -193,15 +215,17 @@ class Resource extends Data implements SwisspostResource
     /**
      * @inheritdoc
      */
-    public function getProductCategories($filter) {
-        if(!isset($filter['filters'])){
+    public function getProductCategories($filter)
+    {
+        if (!isset($filter['filters'])) {
             $filter['filters'] = [];
         }
 
-        if(!isset($filter['fields'])){
+        if (!isset($filter['fields'])) {
             $filter['fields'] = [];
         }
-        return $this->ApiCall('ecommerce_api_v2/get_product_categories',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_product_categories',
             $filter
         );
     }
@@ -209,14 +233,16 @@ class Resource extends Data implements SwisspostResource
     /**
      * @inheritdoc
      */
-    public function checkCustomerCredit($filter) {
+    public function checkCustomerCredit($filter)
+    {
         if (!isset($filter['account_ref'])) {
             $filter['account_ref'] = '';
         }
         if (!isset($filter['amount'])) {
             $filter['amount'] = 0;
         }
-        return $this->ApiCall('ecommerce_api_v2/check_customer_credit',
+        return $this->ApiCall(
+            'ecommerce_api_v2/check_customer_credit',
             $filter
         );
     }
@@ -224,8 +250,10 @@ class Resource extends Data implements SwisspostResource
     /**
      * @inheritdoc
      */
-    public function getInventory($filter) {
-        return $this->ApiCall('ecommerce_api_v2/get_inventory',
+    public function getInventory($filter)
+    {
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_inventory',
             $filter
         );
     }
@@ -233,8 +261,10 @@ class Resource extends Data implements SwisspostResource
     /**
      * @inheritdoc
      */
-    public function getImages($productRef) {
-        return $this->ApiCall('ecommerce_api_v2/get_images',
+    public function getImages($productRef)
+    {
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_images',
             ['product_ref' => $productRef]
         );
     }
@@ -244,7 +274,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function getInvoice($orderRef)
     {
-        return $this->ApiCall('ecommerce_api_v2/get_invoice_docs',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_invoice_docs',
             ['order_ref' => $orderRef]
         );
     }
@@ -254,9 +285,10 @@ class Resource extends Data implements SwisspostResource
      */
     public function checkOrdersPaymentStatus($orderIdsList = [], $invoiceIdsList = [])
     {
-        return $this->ApiCall('ecommerce_api_v2/get_payment_status',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_payment_status',
             [
-                'order_refs' => $orderIdsList,
+                'order_refs'   => $orderIdsList,
                 'invoice_refs' => $invoiceIdsList
             ]
         );
@@ -267,7 +299,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function checkOrdersTransferStatus($orderIdsList = [])
     {
-        return $this->ApiCall('ecommerce_api_v2/get_transfer_status',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_transfer_status',
             ['order_refs' => $orderIdsList]
         );
     }
@@ -277,9 +310,10 @@ class Resource extends Data implements SwisspostResource
      */
     public function addSaleOrderCoupon($orderRef, $couponsData)
     {
-        return $this->ApiCall('ecommerce_api_v2/add_sale_order_gift_cards',
+        return $this->ApiCall(
+            'ecommerce_api_v2/add_sale_order_gift_cards',
             [
-                'order_ref' => $orderRef,
+                'order_ref'  => $orderRef,
                 'gift_cards' => $couponsData
             ]
         );
@@ -290,7 +324,8 @@ class Resource extends Data implements SwisspostResource
      */
     public function getDeliveryReports($orderRef)
     {
-        return $this->ApiCall('ecommerce_api_v2/get_delivery_docs',
+        return $this->ApiCall(
+            'ecommerce_api_v2/get_delivery_docs',
             ['order_ref' => $orderRef]
         );
     }

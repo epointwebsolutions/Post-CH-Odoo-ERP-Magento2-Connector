@@ -22,9 +22,10 @@ class Data extends AbstractHelper
      * Configuration access.
      */
     use ConfigurableTrait;
-    
+
     /**
      * All the website stores.
+     *
      * @var array
      */
     static public $stores = [];
@@ -41,6 +42,7 @@ class Data extends AbstractHelper
 
     /**
      * Config xml base path.
+     *
      * @const XML_PATH
      */
     const XML_PATH = 'swisspostsales/';
@@ -62,8 +64,8 @@ class Data extends AbstractHelper
     /**
      * Data constructor.
      *
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Framework\App\Helper\Context      $context
+     * @param \Magento\Framework\ObjectManagerInterface  $objectManager
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      */
     public function __construct(
@@ -81,6 +83,7 @@ class Data extends AbstractHelper
 
     /**
      * Will get the default status for provided state
+     *
      * @param $state
      *
      * @return string

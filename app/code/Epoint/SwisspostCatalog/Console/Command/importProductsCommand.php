@@ -11,6 +11,7 @@ use Epoint\SwisspostApi\Model\Api\Product as ApiProductModel;
 use Epoint\SwisspostCatalog\Service\Product as ProductService;
 use Epoint\SwisspostApi\Model\Api\Lists\Product as ApiProductList;
 use Epoint\SwisspostCatalog\Helper\Product as ProductHelper;
+use \Magento\Framework\ObjectManagerInterface;
 
 class importProductsCommand extends Command
 {
@@ -52,13 +53,38 @@ class importProductsCommand extends Command
     protected $productHelper;
 
     /**
+     * importProductsCommand constructor.
+     *
+     * @param ObjectManagerInterface $objectManager
+     * @param AppState               $appState
+     * @param ProductService         $productService
+     * @param ProductHelper          $productHelper
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        AppState $appState,
+        ProductService $productService,
+        ProductHelper $productHelper,
+        ApiProductModel $apiProductModel
+    ) {
+        $this->objectManager = $objectManager;
+        $this->appState = $appState;
+        $this->productService = $productService;
+        $this->productHelper = $productHelper;
+        $this->apiProductList = $this->productService->listFactory();
+        $this->apiProductModel = $apiProductModel;
+        parent::__construct();
+    }
+
+    /**
      * Implement configure method.
      */
     protected function configure()
     {
         $this->setName('epoint-swisspostapi:importProducts')
             ->setDescription(__('Run importProducts'))
-            ->setDefinition([
+            ->setDefinition(
+                [
                     new InputArgument(
                         self::PRODUCT_ARGUMENT,
                         InputArgument::OPTIONAL,
@@ -66,12 +92,6 @@ class importProductsCommand extends Command
                     )
                 ]
             );
-        $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->appState = $this->objectManager->get(\Magento\Framework\App\State::class);
-        $this->apiProductModel = $this->objectManager->get(\Epoint\SwisspostApi\Model\Api\Product::class);
-        $this->productService = $this->objectManager->get(\Epoint\SwisspostCatalog\Service\Product::class);
-        $this->productHelper = $this->objectManager->get(\Epoint\SwisspostCatalog\Helper\Product::class);
-        $this->apiProductList = $this->productService->listFactory();
     }
 
     /**
@@ -99,7 +119,7 @@ class importProductsCommand extends Command
             $filter = [];
             // If the limiter has any other value beside the default one (0)
             // we add it to the filter
-            if ($limitImport > 0){
+            if ($limitImport > 0) {
                 $filter['limit'] = (int)$limitImport;
             }
             // Trigger the action
@@ -110,8 +130,12 @@ class importProductsCommand extends Command
             $processed = $this->productService->run($products);
             foreach ($processed as $product) {
                 if ($product) {
-                    $output->writeln(sprintf(__('Successful imported product: %s'),
-                        $product->getSKU()));
+                    $output->writeln(
+                        sprintf(
+                            __('Successful imported product: %s'),
+                            $product->getSKU()
+                        )
+                    );
                 }
             }
         } else {

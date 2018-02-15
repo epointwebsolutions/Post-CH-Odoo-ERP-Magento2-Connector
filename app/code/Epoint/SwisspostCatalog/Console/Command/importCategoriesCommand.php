@@ -6,6 +6,11 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use \Magento\Framework\ObjectManagerInterface;
+use \Magento\Framework\App\State as AppState;
+use \Epoint\SwisspostApi\Model\Api\Category as CategoryApiModel;
+use \Epoint\SwisspostApi\Model\Api\Lists\Category as CategoryApiList;
+use \Epoint\SwisspostCatalog\Service\Category as CategoryService;
 
 class importCategoriesCommand extends Command
 {
@@ -17,9 +22,53 @@ class importCategoriesCommand extends Command
     const CATEGORY_NAME_ARGUMENT = 'category';
 
     /**
-     * @var \Magento\Framework\App\ObjectManager $objectManager
+     * @var \Magento\Framework\ObjectManagerInterface
      */
     private $objectManager;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    private $appState;
+
+    /**
+     * @var \Epoint\SwisspostApi\Model\Api\Category
+     */
+    private $categoryApiModel;
+
+    /**
+     * @var \Epoint\SwisspostApi\Model\Api\Lists\Category
+     */
+    private $categoryApiList;
+
+    /**
+     * @var \Epoint\SwisspostCatalog\Service\Category
+     */
+    private $categoryService;
+
+    /**
+     * getProductCategoriesCommand constructor.
+     *
+     * @param ObjectManagerInterface $objectManager
+     * @param AppState               $appState
+     * @param CategoryApiModel       $categoryApiModel
+     * @param CategoryApiList        $categoryApiList
+     * @param CategoryService        $categoryService
+     */
+    public function __construct(
+        ObjectManagerInterface $objectManager,
+        AppState $appState,
+        CategoryApiModel $categoryApiModel,
+        CategoryApiList $categoryApiList,
+        CategoryService $categoryService
+    ) {
+        $this->objectManager = $objectManager;
+        $this->appState = $appState;
+        $this->categoryApiModel = $categoryApiModel;
+        $this->categoryApiList = $categoryApiList;
+        $this->categoryService = $categoryService;
+        parent::__construct();
+    }
 
     /**
      * Implement configure method.
@@ -28,7 +77,8 @@ class importCategoriesCommand extends Command
     {
         $this->setName('epoint-swisspostapi:importCategories')
             ->setDescription(__('Run getProductsCategories'))
-            ->setDefinition([
+            ->setDefinition(
+                [
                     new InputArgument(
                         self::CATEGORY_NAME_ARGUMENT,
                         InputArgument::OPTIONAL,
@@ -36,8 +86,6 @@ class importCategoriesCommand extends Command
                     )
                 ]
             );
-        $this->objectManager
-            = \Magento\Framework\App\ObjectManager::getInstance();
     }
 
     /**
@@ -49,26 +97,23 @@ class importCategoriesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Set area code.
-        $this->objectManager->get(\Magento\Framework\App\State::class)
-            ->setAreaCode('adminhtml');
+        $this->appState->setAreaCode('adminhtml');
 
         // Reading the category name
         $categoryName = $input->getArgument(self::CATEGORY_NAME_ARGUMENT);
         if ($categoryName) {
-            $category
-                = $this->objectManager->get(\Epoint\SwisspostApi\Model\Api\Category::class);
-            $categories[] = $category->load($categoryName);
+            $categories[] = $this->categoryApiModel->load($categoryName);
         } else {
-            $categoryList
-                = $this->objectManager->get(\Epoint\SwisspostApi\Model\Api\Lists\Category::class);
-            $categories = $categoryList->search();
+            $categories = $this->categoryApiList->search();
         }
-        $importer
-            = $this->objectManager->get(\Epoint\SwisspostCatalog\Service\Category::class);
         if ($categories) {
-            $importer->run($categories);
-            $output->writeln(sprintf(__('Swisspost API load product categories request successful, count: %s'),
-                count($categories)));
+            $this->categoryService->run($categories);
+            $output->writeln(
+                sprintf(
+                    __('Swisspost API load product categories request successful, count: %s'),
+                    count($categories)
+                )
+            );
         } else {
             $output->writeln(sprintf(__('Swisspost API load product categories result no values')));
         }

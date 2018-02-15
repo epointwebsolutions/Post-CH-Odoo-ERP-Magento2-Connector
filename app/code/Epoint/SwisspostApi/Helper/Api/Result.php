@@ -18,18 +18,21 @@ abstract class Result
 
     /**
      * Error data.
+     *
      * @var array
      */
     private $error = array();
 
     /**
      * Debug data.
+     *
      * @var arrayD
      */
     protected $debug = array();
 
     /**
      * Flag if result is ok.
+     *
      * @var bool
      */
     private $isOK = false;

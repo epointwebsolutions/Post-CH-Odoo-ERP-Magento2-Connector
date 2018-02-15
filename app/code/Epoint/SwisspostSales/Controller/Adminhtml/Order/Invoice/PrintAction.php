@@ -12,27 +12,19 @@ class PrintAction
     public function execute()
     {
         // Getting helper
-        $helper = $this->_objectManager->get(
-            \Epoint\SwisspostSales\Helper\Invoice::class
-        );
+        $helper = $this->_objectManager->get(\Epoint\SwisspostSales\Helper\Invoice::class);
 
         if ($helper->isPrintPdfEnabled()) {
             // File factory
-            $fileFactory = $this->_objectManager->get(
-                \Magento\Framework\App\Response\Http\FileFactory::class
-            );
+            $fileFactory = $this->_objectManager->get(\Magento\Framework\App\Response\Http\FileFactory::class);
 
             // Get invoice id
             $localInvoiceId = $this->getRequest()->getParam('invoice_id');
-            $localInvoice = $this->_objectManager->create(
-                \Magento\Sales\Api\InvoiceRepositoryInterface::class
-            )->get($localInvoiceId);
+            $localInvoice = $this->_objectManager->create(\Magento\Sales\Api\InvoiceRepositoryInterface::class)->get($localInvoiceId);
             $localOrder = $localInvoice->getOrder();
 
             // Instatiate invoice model
-            $apiInvoice = $this->_objectManager->get(
-                \Epoint\SwisspostApi\Model\Api\Invoice::class
-            )->getInstance($localOrder);
+            $apiInvoice = $this->_objectManager->get(\Epoint\SwisspostApi\Model\Api\Invoice::class)->getInstance($localOrder);
 
             // Get invoice
             $result = $apiInvoice->load();

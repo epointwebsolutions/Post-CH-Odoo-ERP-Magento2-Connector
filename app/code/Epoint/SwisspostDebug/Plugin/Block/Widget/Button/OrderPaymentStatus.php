@@ -17,8 +17,9 @@ class OrderPaymentStatus
 
     /**
      * @param ToolbarContext $toolbar
-     * @param AbstractBlock $context
-     * @param ButtonList $buttonList
+     * @param AbstractBlock  $context
+     * @param ButtonList     $buttonList
+     *
      * @return array
      */
     public function beforePushButtons(
@@ -33,12 +34,13 @@ class OrderPaymentStatus
         $orderId = $context->getRequest()->getParam('order_id');
 
         $message = __('Are you sure you want to verify the order payment status?');
-        $url = $context->getUrl('swisspost/order_payment', ['order_id'=>$orderId]);
-        $buttonList->add('order_payment_status',
+        $url = $context->getUrl('swisspost/order_payment', ['order_id' => $orderId]);
+        $buttonList->add(
+            'order_payment_status',
             [
-                'label' => __('Odoo Payment Status'),
-                'on_click'    => "confirmSetLocation('{$message}', '{$url}')",
-                'class' => 'action-secondary'
+                'label'    => __('Odoo Payment Status'),
+                'on_click' => "confirmSetLocation('{$message}', '{$url}')",
+                'class'    => 'action-secondary'
             ]
         );
 

@@ -18,8 +18,9 @@ class OrderOdooExport
 
     /**
      * @param ToolbarContext $toolbar
-     * @param AbstractBlock $context
-     * @param ButtonList $buttonList
+     * @param AbstractBlock  $context
+     * @param ButtonList     $buttonList
+     *
      * @return array
      */
     public function beforePushButtons(
@@ -34,12 +35,13 @@ class OrderOdooExport
         $orderId = $context->getRequest()->getParam('order_id');
 
         $message = __('Are you sure you want to export the order to Odoo?');
-        $url = $context->getUrl('swisspost/order_export', ['order_id'=>$orderId]);
-        $buttonList->add('order_export_odoo',
+        $url = $context->getUrl('swisspost/order_export', ['order_id' => $orderId]);
+        $buttonList->add(
+            'order_export_odoo',
             [
-                'label' => __('Odoo Export'),
-                'on_click'    => "confirmSetLocation('{$message}', '{$url}')",
-                'class' => 'action-secondary'
+                'label'    => __('Odoo Export'),
+                'on_click' => "confirmSetLocation('{$message}', '{$url}')",
+                'class'    => 'action-secondary'
             ]
         );
 

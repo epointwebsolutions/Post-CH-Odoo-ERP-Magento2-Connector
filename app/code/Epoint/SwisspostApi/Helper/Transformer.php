@@ -111,6 +111,7 @@ class Transformer extends Data
 
     /**
      * Path for dynamic mapping
+     *
      * @const PATH_TO_DYNAMIC_CUSTOMER_GROUPS_MAPPING
      */
     const PATH_TO_DYNAMIC_CUSTOMER_GROUPS_MAPPING = 'customer_groups_mapping/dynamic_customer_groups_mapping';
@@ -143,7 +144,7 @@ class Transformer extends Data
      */
     public function toDefaultCustomerTitleByGender($gender)
     {
-        if ($gender == self::CUSTOMER_GENDER_FEMALE){
+        if ($gender == self::CUSTOMER_GENDER_FEMALE) {
             return self::ACCOUNT_DEFAULT_FEMALE_ACCOUNT_TITLE;
         }
         if ($gender == self::CUSTOMER_GENDER_MALE) {
@@ -166,7 +167,7 @@ class Transformer extends Data
         // Default value
         $addressTitle = '';
         // Checking the prefix and updating the title value
-        if (!empty($prefix)){
+        if (!empty($prefix)) {
             $addressTitle = strtoupper(
                 preg_replace(
                     '/[^A-Za-z0-9\-]/', '',
@@ -258,6 +259,7 @@ class Transformer extends Data
 
     /**
      * Get the odoo mapped value for selected customer group id
+     *
      * @param $customerGroupId
      *
      * @return string
@@ -272,9 +274,9 @@ class Transformer extends Data
         // Get the mapping from db
         $mappingFields = json_decode($this->getConfigValue('swisspostsales/' . self::PATH_TO_DYNAMIC_CUSTOMER_GROUPS_MAPPING), true);
         // Process data
-        if (!empty($mappingFields) && is_array($mappingFields)){
-            foreach ($mappingFields as $mappingKey => $mappingValues){
-                if (isset($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)){
+        if (!empty($mappingFields) && is_array($mappingFields)) {
+            foreach ($mappingFields as $mappingKey => $mappingValues) {
+                if (isset($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)) {
                     return $mappingValues[$keyToReturn];
                 }
             }

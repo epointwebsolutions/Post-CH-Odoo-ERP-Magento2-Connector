@@ -1,4 +1,5 @@
 <?php
+
 namespace Epoint\SwisspostSales\Model\Cron;
 
 use Epoint\SwisspostSales\Service\TransferStatus As ExportService;

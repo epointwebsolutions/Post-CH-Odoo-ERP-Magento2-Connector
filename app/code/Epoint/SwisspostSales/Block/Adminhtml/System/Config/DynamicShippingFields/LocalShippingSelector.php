@@ -29,7 +29,7 @@ class LocalShippingSelector extends \Magento\Framework\View\Element\Html\Select
         Context $context,
         ObjectManagerInterface $objectManager,
         ShippingModelConfig $shippingModelConfig
-    ){
+    ) {
         $this->objectManager = $objectManager;
         $this->shippingModelConfig = $shippingModelConfig;
         parent::__construct($context);
@@ -54,6 +54,7 @@ class LocalShippingSelector extends \Magento\Framework\View\Element\Html\Select
 
     /**
      * Return a list with available options
+     *
      * @return array
      */
     public function getActiveShippingMethods()
@@ -76,6 +77,7 @@ class LocalShippingSelector extends \Magento\Framework\View\Element\Html\Select
      * Sets name for input element
      *
      * @param string $value
+     *
      * @return $this
      */
     public function setInputName($value)

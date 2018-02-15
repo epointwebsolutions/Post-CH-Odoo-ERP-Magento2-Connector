@@ -64,8 +64,10 @@ class Index extends \Magento\Backend\App\Action
             /** @var \Magento\Catalog\Model\Product $product */
             foreach ($imported as $product) {
                 $outputMessage
-                    = sprintf(__('Product with SKU -> %s has been imported!'),
-                    $product->getSKU());
+                    = sprintf(
+                    __('Product with SKU -> %s has been imported!'),
+                    $product->getSKU()
+                );
                 // Display success message
                 if ($outputMessage !== '') {
                     $this->messageManager->addSuccessMessage($outputMessage);
@@ -73,8 +75,10 @@ class Index extends \Magento\Backend\App\Action
             }
         } else {
             $outputMessage
-                = sprintf(__('An error occurred while importing the product with SKU - %s!'),
-                $productSku);
+                = sprintf(
+                __('An error occurred while importing the product with SKU - %s!'),
+                $productSku
+            );
             // Display error message
             $this->messageManager->addErrorMessage($outputMessage);
         }

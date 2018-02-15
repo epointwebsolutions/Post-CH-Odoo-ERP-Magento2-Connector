@@ -55,7 +55,7 @@ class Order extends BaseExchange
     ) {
         parent::__construct($objectManager, $logger, $scopeConfig);
         $this->orderHelper = $orderHelper;
-        $this->couponService  = $couponService;
+        $this->couponService = $couponService;
         $this->saleOrderApiModel = $saleOrderApiModel;
         $this->listOrderModel = $listOrderModel;;
     }
@@ -96,7 +96,7 @@ class Order extends BaseExchange
 
                         // The order was exported to Odoo.
                         // If the export is enabled in config we trigger the action
-                        if ($this->orderHelper->isExportOrderCouponAsGiftCardEnabled()){
+                        if ($this->orderHelper->isExportOrderCouponAsGiftCardEnabled()) {
                             $this->couponService->run([$order]);
                         }
                     } else {
@@ -127,7 +127,8 @@ class Order extends BaseExchange
                 throw new \Exception(
                     sprintf(
                         __(
-                            'Trying to resend Swisspost order: %d'),
+                            'Trying to resend Swisspost order: %d'
+                        ),
                         $order->getId()
                     )
                 );

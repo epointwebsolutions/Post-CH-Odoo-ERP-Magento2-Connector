@@ -11,16 +11,12 @@ class PrintAction
     public function execute()
     {
         // Getting helper
-        $helper = $this->_objectManager->get(
-            \Epoint\SwisspostSales\Helper\Shipping::class
-        );
+        $helper = $this->_objectManager->get(\Epoint\SwisspostSales\Helper\Shipping::class);
 
         // Verify if the option is enabled from config
         if ($helper->isPrintPdfEnabled()) {
             // File factory
-            $fileFactory = $this->_objectManager->get(
-                \Magento\Framework\App\Response\Http\FileFactory::class
-            );
+            $fileFactory = $this->_objectManager->get(\Magento\Framework\App\Response\Http\FileFactory::class);
 
             // Get shipment id
             $shipmentId = $this->getRequest()->getParam('shipment_id');
@@ -31,9 +27,7 @@ class PrintAction
 
             // Instatiate shipment model
             /** @var \Epoint\SwisspostApi\Model\Api\Shipping $apiShipment */
-            $apiShipment = $this->_objectManager->get(
-                \Epoint\SwisspostApi\Model\Api\Shipping::class
-            )->getInstance($localOrder);
+            $apiShipment = $this->_objectManager->get(\Epoint\SwisspostApi\Model\Api\Shipping::class)->getInstance($localOrder);
 
             // Get shipment docs
             $result = $apiShipment->load();

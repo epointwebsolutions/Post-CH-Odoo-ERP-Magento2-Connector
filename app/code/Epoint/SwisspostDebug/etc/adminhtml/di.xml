@@ -1,7 +1,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Backend\Block\Widget\Button\Toolbar">
-        <plugin name="orderFormExportOdoo" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderOdooExport" />
-        <plugin name="orderFormTransferStatus" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderTransferStatus" />
-        <plugin name="orderFormPaymentStatus" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderPaymentStatus" />
+        <plugin name="orderFormExportOdoo" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderOdooExport"/>
+        <plugin name="orderFormTransferStatus" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderTransferStatus"/>
+        <plugin name="orderFormPaymentStatus" type="Epoint\SwisspostDebug\Plugin\Block\Widget\Button\OrderPaymentStatus"/>
     </type>
 </config>
