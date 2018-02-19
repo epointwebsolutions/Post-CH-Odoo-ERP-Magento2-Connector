@@ -6,9 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
-use \Epoint\SwisspostApi\Model\Api\Account as AccountApiModel;
-use \Magento\Customer\Model\Customer as CustomerModel;
+use \Epoint\SwisspostApi\Model\Api\Account\Proxy as AccountApiModel;
+use \Magento\Customer\Model\Customer\Proxy as CustomerModel;
 use \Magento\Framework\App\State as AppState;
 
 class createUpdateAccountCommand extends Command
@@ -19,11 +18,6 @@ class createUpdateAccountCommand extends Command
      * @param CUSTOMER_ID_ARGUMENT
      */
     const CUSTOMER_ID_ARGUMENT = 'customer';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Epoint\SwisspostApi\Model\Api\Account
@@ -43,18 +37,15 @@ class createUpdateAccountCommand extends Command
     /**
      * createUpdateAccountCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param AccountApiModel        $accountApiModel
-     * @param CustomerModel          $customerModel
-     * @param AppState               $appState
+     * @param \Epoint\SwisspostApi\Model\Api\Account\Proxy $accountApiModel
+     * @param \Magento\Customer\Model\Customer\Proxy       $customerModel
+     * @param \Magento\Framework\App\State                 $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AccountApiModel $accountApiModel,
         CustomerModel $customerModel,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->accountApiModel = $accountApiModel;
         $this->customerModel = $customerModel;
         $this->appState = $appState;

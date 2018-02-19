@@ -7,11 +7,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Magento\Framework\App\State as AppState;
-use Epoint\SwisspostApi\Model\Api\Product as ApiProductModel;
-use Epoint\SwisspostCatalog\Service\Product as ProductService;
-use Epoint\SwisspostApi\Model\Api\Lists\Product as ApiProductList;
-use Epoint\SwisspostCatalog\Helper\Product as ProductHelper;
-use \Magento\Framework\ObjectManagerInterface;
+use Epoint\SwisspostApi\Model\Api\Product\Proxy as ApiProductModel;
+use Epoint\SwisspostCatalog\Service\Product\Proxy as ProductService;
+use Epoint\SwisspostApi\Model\Api\Lists\Product\Proxy as ApiProductList;
+use Epoint\SwisspostCatalog\Helper\Product\Proxy as ProductHelper;
 
 class importProductsCommand extends Command
 {
@@ -21,11 +20,6 @@ class importProductsCommand extends Command
      * @const PRODUCT_ARGUMENT
      */
     const PRODUCT_ARGUMENT = 'sku';
-
-    /**
-     * @var \Magento\Framework\App\ObjectManager $objectManager
-     */
-    private $objectManager;
 
     /**
      * @var AppState
@@ -55,23 +49,20 @@ class importProductsCommand extends Command
     /**
      * importProductsCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param AppState               $appState
-     * @param ProductService         $productService
-     * @param ProductHelper          $productHelper
+     * @param \Magento\Framework\App\State                   $appState
+     * @param \Epoint\SwisspostCatalog\Service\Product\Proxy $productService
+     * @param \Epoint\SwisspostCatalog\Helper\Product\Proxy  $productHelper
+     * @param \Epoint\SwisspostApi\Model\Api\Product\Proxy   $apiProductModel
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AppState $appState,
         ProductService $productService,
         ProductHelper $productHelper,
         ApiProductModel $apiProductModel
     ) {
-        $this->objectManager = $objectManager;
         $this->appState = $appState;
         $this->productService = $productService;
         $this->productHelper = $productHelper;
-        $this->apiProductList = $this->productService->listFactory();
         $this->apiProductModel = $apiProductModel;
         parent::__construct();
     }
@@ -102,6 +93,8 @@ class importProductsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->apiProductList = $this->productService->listFactory();
+
         // Set area code.
         $this->appState->setAreaCode('adminhtml');
         // Getting the product to be imported sku

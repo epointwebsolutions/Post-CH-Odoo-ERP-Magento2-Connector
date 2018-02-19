@@ -6,7 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
 use Epoint\SwisspostApi\Model\Api\Lists\Product as ProductApiList;
 use Epoint\SwisspostCatalog\Model\MediaFactory;
 use \Magento\Framework\App\State as AppState;
@@ -17,11 +16,6 @@ class getProductsCommand extends Command
      * Product argument
      */
     const PRODUCT_ARGUMENT = 'sku';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Epoint\SwisspostApi\Model\Api\Lists\Product
@@ -41,18 +35,15 @@ class getProductsCommand extends Command
     /**
      * getProductsCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param ProductApiList         $productApiList
-     * @param MediaFactory           $mediaFactory
-     * @param AppState               $appState
+     * @param \Epoint\SwisspostApi\Model\Api\Lists\Product $productApiList
+     * @param \Epoint\SwisspostCatalog\Model\MediaFactory  $mediaFactory
+     * @param \Magento\Framework\App\State                 $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         ProductApiList $productApiList,
         MediaFactory $mediaFactory,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->productApiList = $productApiList;
         $this->mediaFactory = $mediaFactory;
         $this->appState = $appState;

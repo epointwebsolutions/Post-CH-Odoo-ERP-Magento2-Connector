@@ -6,9 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use \Magento\Framework\ObjectManagerInterface;
-use Epoint\SwisspostApi\Model\Api\Account as AccountApiModel;
+use Magento\Customer\Api\CustomerRepositoryInterface\Proxy as CustomerRepository;
+use Epoint\SwisspostApi\Model\Api\Account\Proxy as AccountApiModel;
 use \Magento\Framework\App\State as AppState;
 
 class searchReadAccountCommand extends Command
@@ -17,11 +16,6 @@ class searchReadAccountCommand extends Command
      * Name argument
      */
     const CUSTOMER_ID_ARGUMENT = 'customer';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Customer\Api\CustomerRepositoryInterface
@@ -41,18 +35,15 @@ class searchReadAccountCommand extends Command
     /**
      * searchReadAccountCommand constructor.
      *
-     * @param ObjectManagerInterface      $objectManager
-     * @param CustomerRepositoryInterface $customerRepositoryInterface
-     * @param AccountApiModel             $accountApiModel
-     * @param AppState                    $appState
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface\Proxy $customerRepositoryInterface
+     * @param \Epoint\SwisspostApi\Model\Api\Account\Proxy            $accountApiModel
+     * @param \Magento\Framework\App\State                            $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
-        CustomerRepositoryInterface $customerRepositoryInterface,
+        CustomerRepository $customerRepositoryInterface,
         AccountApiModel $accountApiModel,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->customerRepositoryInterface = $customerRepositoryInterface;
         $this->accountApiModel = $accountApiModel;
         $this->appState = $appState;

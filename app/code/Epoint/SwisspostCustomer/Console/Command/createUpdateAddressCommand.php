@@ -6,9 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
-use \Magento\Customer\Model\Address as CustomerAddressModel;
-use \Epoint\SwisspostApi\Model\Api\Address as AddressApiModel;
+use \Magento\Customer\Model\Address\Proxy as CustomerAddressModel;
+use \Epoint\SwisspostApi\Model\Api\Address\Proxy as AddressApiModel;
 use \Magento\Framework\App\State as AppState;
 
 class createUpdateAddressCommand extends Command
@@ -19,11 +18,6 @@ class createUpdateAddressCommand extends Command
      * @const ADDRESS_ID_ARGUMENT
      */
     const ADDRESS_ID_ARGUMENT = 'address';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Customer\Model\Address
@@ -43,18 +37,15 @@ class createUpdateAddressCommand extends Command
     /**
      * createUpdateAddressCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param CustomerAddressModel   $customerAddressModel
-     * @param AddressApiModel        $addressApiModel
-     * @param AppState               $appState
+     * @param \Magento\Customer\Model\Address\Proxy        $customerAddressModel
+     * @param \Epoint\SwisspostApi\Model\Api\Address\Proxy $addressApiModel
+     * @param \Magento\Framework\App\State                 $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         CustomerAddressModel $customerAddressModel,
         AddressApiModel $addressApiModel,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->customerAddressModel = $customerAddressModel;
         $this->addressApiModel = $addressApiModel;
         $this->appState = $appState;

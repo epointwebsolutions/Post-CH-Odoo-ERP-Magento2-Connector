@@ -6,9 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
 use Epoint\SwisspostApi\Model\Api\Lists\Inventory as ApiListInventory;
-use Epoint\SwisspostCatalog\Service\Inventory as ServiceInventory;
+use Epoint\SwisspostCatalog\Service\Inventory\Proxy as ServiceInventory;
 use \Magento\Framework\App\State as AppState;
 
 class getInventoryCommand extends Command
@@ -18,11 +17,6 @@ class getInventoryCommand extends Command
      * Product argument
      */
     const PRODUCT_ARGUMENT = 'sku';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Epoint\SwisspostApi\Model\Api\Lists\Inventory
@@ -42,18 +36,15 @@ class getInventoryCommand extends Command
     /**
      * getInventoryCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param ApiListInventory       $apiListInventory
-     * @param ServiceInventory       $serviceInventory
-     * @param AppState               $appState
+     * @param \Epoint\SwisspostApi\Model\Api\Lists\Inventory   $apiListInventory
+     * @param \Epoint\SwisspostCatalog\Service\Inventory\Proxy $serviceInventory
+     * @param AppState                                         $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         ApiListInventory $apiListInventory,
         ServiceInventory $serviceInventory,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->apiListInventory = $apiListInventory;
         $this->serviceInventory = $serviceInventory;
         $this->appState = $appState;

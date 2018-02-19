@@ -6,21 +6,14 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use \Magento\Framework\App\State as AppState;
-use \Magento\Framework\ObjectManagerInterface;
 use Epoint\SwisspostSales\Model\Cron\OrderFactory as OrderCron;
 
 class cronExportOrderCommand extends Command
 {
-
     /**
      * Name argument
      */
     const ORDER_ID_ARGUMENT = 'order';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Framework\App\State
@@ -35,16 +28,14 @@ class cronExportOrderCommand extends Command
     /**
      * cronExportOrderCommand constructor.
      *
-     * @param AppState               $appState
-     * @param ObjectManagerInterface $objectManager
+     * @param \Magento\Framework\App\State                   $appState
+     * @param \Epoint\SwisspostSales\Model\Cron\OrderFactory $orderCron
      */
     public function __construct(
         AppState $appState,
-        ObjectManagerInterface $objectManager,
         OrderCron $orderCron
     ) {
         $this->appState = $appState;
-        $this->objectManager = $objectManager;
         $this->orderCron = $orderCron;
         parent::__construct();
     }

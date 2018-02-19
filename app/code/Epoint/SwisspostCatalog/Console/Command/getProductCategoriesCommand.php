@@ -6,7 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
 use \Magento\Framework\App\State as AppState;
 use \Epoint\SwisspostApi\Model\Api\Category as CategoryApiModel;
 use \Epoint\SwisspostApi\Model\Api\Lists\Category as CategoryApiList;
@@ -19,11 +18,6 @@ class getProductCategoriesCommand extends Command
      * Category argument
      */
     const CATEGORY_NAME_ARGUMENT = 'category';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Framework\App\State
@@ -48,20 +42,17 @@ class getProductCategoriesCommand extends Command
     /**
      * getProductCategoriesCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param AppState               $appState
-     * @param CategoryApiModel       $categoryApiModel
-     * @param CategoryApiList        $categoryApiList
-     * @param CategoryService        $categoryService
+     * @param \Magento\Framework\App\State                  $appState
+     * @param \Epoint\SwisspostApi\Model\Api\Category       $categoryApiModel
+     * @param \Epoint\SwisspostApi\Model\Api\Lists\Category $categoryApiList
+     * @param \Epoint\SwisspostCatalog\Service\Category     $categoryService
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AppState $appState,
         CategoryApiModel $categoryApiModel,
         CategoryApiList $categoryApiList,
         CategoryService $categoryService
     ) {
-        $this->objectManager = $objectManager;
         $this->appState = $appState;
         $this->categoryApiModel = $categoryApiModel;
         $this->categoryApiList = $categoryApiList;

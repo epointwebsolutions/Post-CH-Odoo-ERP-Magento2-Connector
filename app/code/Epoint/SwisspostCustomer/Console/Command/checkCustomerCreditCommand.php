@@ -6,8 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Epoint\SwisspostApi\Model\Api\Account as AccountModelApi;
-use \Magento\Framework\ObjectManagerInterface;
+use Epoint\SwisspostApi\Model\Api\Account\Proxy as AccountModelApi;
 use \Magento\Framework\App\State as AppState;
 
 class checkCustomerCreditCommand extends Command
@@ -27,11 +26,6 @@ class checkCustomerCreditCommand extends Command
     const ACCOUNT_VALUE_ARGUMENT = 'credit_amount';
 
     /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
-
-    /**
      * @var \Epoint\SwisspostApi\Model\Api\Account
      */
     private $accountModelApi;
@@ -44,16 +38,13 @@ class checkCustomerCreditCommand extends Command
     /**
      * checkCustomerCreditCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param AccountModelApi        $accountModelApi
-     * @param AppState               $appState
+     * @param \Epoint\SwisspostApi\Model\Api\Account\Proxy $accountModelApi
+     * @param \Magento\Framework\App\State                 $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AccountModelApi $accountModelApi,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->accountModelApi = $accountModelApi;
         $this->appState = $appState;
         parent::__construct();

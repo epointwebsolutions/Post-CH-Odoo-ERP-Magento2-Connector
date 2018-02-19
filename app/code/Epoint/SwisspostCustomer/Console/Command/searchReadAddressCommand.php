@@ -6,9 +6,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
-use \Magento\Customer\Model\Address as AddressModel;
-use Epoint\SwisspostApi\Model\Api\Address as AddressApiModel;
+use \Magento\Customer\Model\Address\Proxy as AddressModel;
+use Epoint\SwisspostApi\Model\Api\Address\Proxy as AddressApiModel;
 use \Magento\Framework\App\State as AppState;
 
 class searchReadAddressCommand extends Command
@@ -18,11 +17,6 @@ class searchReadAddressCommand extends Command
      * Name argument
      */
     const ADDRESS_ID_ARGUMENT = 'address';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Customer\Model\Address
@@ -42,18 +36,15 @@ class searchReadAddressCommand extends Command
     /**
      * searchReadAddressCommand constructor.
      *
-     * @param ObjectManagerInterface $objectManager
-     * @param AddressModel           $addressModel
-     * @param AddressApiModel        $addressApiModel
-     * @param AppState               $appState
+     * @param \Magento\Customer\Model\Address\Proxy        $addressModel
+     * @param \Epoint\SwisspostApi\Model\Api\Address\Proxy $addressApiModel
+     * @param \Magento\Framework\App\State                 $appState
      */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AddressModel $addressModel,
         AddressApiModel $addressApiModel,
         AppState $appState
     ) {
-        $this->objectManager = $objectManager;
         $this->addressModel = $addressModel;
         $this->addressApiModel = $addressApiModel;
         $this->appState = $appState;

@@ -6,10 +6,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use \Magento\Framework\ObjectManagerInterface;
 use \Magento\Framework\App\State as AppState;
 use \Magento\Sales\Model\OrderFactory as SalesOrderModel;
-use \Epoint\SwisspostApi\Model\Api\SaleOrder as SaleOrderApiModel;
+use \Epoint\SwisspostApi\Model\Api\SaleOrder\Proxy as SaleOrderApiModel;
 
 class createSaleOrderCommand extends Command
 {
@@ -19,11 +18,6 @@ class createSaleOrderCommand extends Command
      * @const ORDER_ID_ARGUMENT
      */
     const ORDER_ID_ARGUMENT = 'order';
-
-    /**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    private $objectManager;
 
     /**
      * @var \Magento\Framework\App\State
@@ -40,13 +34,18 @@ class createSaleOrderCommand extends Command
      */
     private $saleOrderApiModel;
 
+    /**
+     * createSaleOrderCommand constructor.
+     *
+     * @param \Magento\Framework\App\State                   $appState
+     * @param \Magento\Sales\Model\OrderFactory              $salesOrderModel
+     * @param \Epoint\SwisspostApi\Model\Api\SaleOrder\Proxy $saleOrderApiModel
+     */
     public function __construct(
-        ObjectManagerInterface $objectManager,
         AppState $appState,
         SalesOrderModel $salesOrderModel,
         SaleOrderApiModel $saleOrderApiModel
     ) {
-        $this->objectManager = $objectManager;
         $this->appState = $appState;
         $this->salesOrderModel = $salesOrderModel;
         $this->saleOrderApiModel = $saleOrderApiModel;
