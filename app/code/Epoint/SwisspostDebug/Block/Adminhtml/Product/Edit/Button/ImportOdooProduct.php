@@ -15,8 +15,10 @@ class ImportOdooProduct extends Generic implements ButtonProviderInterface
         $productId = $this->getProduct()->getId();
         $productSku = $this->getProduct()->getSku();
         $message = __('Are you sure you want to import the product?');
-        $url = $this->getUrl('swisspost/product_import',
-            ['id' => $productId, 'sku' => $productSku]);
+        $url = $this->getUrl(
+            'swisspost/product_import',
+            ['id' => $productId, 'sku' => $productSku]
+        );
         $data = [
             'label'       => __('Odoo Import'),
             'back_button' => 'import_odoo',

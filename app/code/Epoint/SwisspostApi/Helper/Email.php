@@ -49,11 +49,12 @@ class Email extends Data
      */
     public function isLoggingEnabled()
     {
-        return $this->getConfigValue(self::XML_PATH . 'logging/enable') ?  true:false;
+        return $this->getConfigValue(self::XML_PATH . 'logging/enable') ? true : false;
     }
 
     /**
      * Sending email with request/response data  to the define config emails
+     *
      * @param Api\Curl\Result $result
      */
     public function send(\Epoint\SwisspostApi\Helper\Api\Curl\Result $result)
@@ -63,7 +64,7 @@ class Email extends Data
         // Because the debug logging level will receive all the messages
         // the starting list will include all the config defined emails
         $emailList = $this->getEmailFromConfig(self::XML_PATH_DEBUG_EMAILS);
-        if (!$result->isOK()){
+        if (!$result->isOK()) {
             // Updating the email subject
             $subject = __("Odoo API request failed.");
             // Having a fail request we need to send emails to the defined email list, for error level as well
@@ -71,8 +72,8 @@ class Email extends Data
         }
 
         // Checking to see if logging is enabled
-        if ($this->isLoggingEnabled() && count($emailList) > 0){
-            foreach ($emailList as $email){
+        if ($this->isLoggingEnabled() && count($emailList) > 0) {
+            foreach ($emailList as $email) {
                 // Setting the variables
                 $emailTemplateVariables = [];
                 $emailTemplateVariables['debug_message'] = $this->pretty_json($result->getDebugMessage());
@@ -91,7 +92,7 @@ class Email extends Data
                     )
                     ->setFrom('general')
                     // you can config general email address in Store -> Configuration -> General -> Store Email Addresses
-                    ->addTo(''.$email,  $this->storeManager->getStore()->getName() . " Store")
+                    ->addTo('' . $email, $this->storeManager->getStore()->getName() . " Store")
                     ->setReplyTo($email)
                     ->getTransport();
                 $transport->sendMessage();
@@ -110,12 +111,12 @@ class Email extends Data
      */
     public function pretty_json($json)
     {
-        $result      = '';
-        $pos         = 0;
-        $strLen      = strlen($json);
-        $indentStr   = '  ';
-        $newLine     = "\n";
-        $prevChar    = '';
+        $result = '';
+        $pos = 0;
+        $strLen = strlen($json);
+        $indentStr = '  ';
+        $newLine = "\n";
+        $prevChar = '';
         $outOfQuotes = true;
 
         for ($i = 0; $i <= $strLen; $i++) {
@@ -126,11 +127,13 @@ class Email extends Data
                 $outOfQuotes = !$outOfQuotes;
                 // If this character is the end of an element,
                 // output a new line and indent the next line.
-            } else if(($char === '}' || $char === ']') && $outOfQuotes) {
-                $result .= $newLine;
-                $pos --;
-                for ($j=0; $j<$pos; $j++) {
-                    $result .= $indentStr;
+            } else {
+                if (($char === '}' || $char === ']') && $outOfQuotes) {
+                    $result .= $newLine;
+                    $pos--;
+                    for ($j = 0; $j < $pos; $j++) {
+                        $result .= $indentStr;
+                    }
                 }
             }
             // Add the character to the result string.
@@ -140,7 +143,7 @@ class Email extends Data
             if (($char === ',' || $char === '{' || $char === '[') && $outOfQuotes) {
                 $result .= $newLine;
                 if ($char === '{' || $char === '[') {
-                    $pos ++;
+                    $pos++;
                 }
                 for ($j = 0; $j < $pos; $j++) {
                     $result .= $indentStr;

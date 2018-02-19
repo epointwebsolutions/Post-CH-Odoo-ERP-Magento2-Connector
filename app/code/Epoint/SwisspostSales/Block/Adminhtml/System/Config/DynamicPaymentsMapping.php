@@ -16,7 +16,7 @@ class DynamicPaymentsMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function getActiveLocalPaymentsRenderer()
     {
-        if (!$this->localPaymentRenderer){
+        if (!$this->localPaymentRenderer) {
             $this->localPaymentRenderer = $this->getLayout()->createBlock(
                 '\Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicPaymentsFields\LocalPaymentsSelector',
                 '', ['data' => ['is_render_to_js_template' => true]]
@@ -30,15 +30,17 @@ class DynamicPaymentsMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function _prepareToRender()
     {
-        $this->addColumn('local_payment_code',
+        $this->addColumn(
+            'local_payment_code',
             [
-                'label' => __('Local Payment'),
+                'label'    => __('Local Payment'),
                 'renderer' => $this->getActiveLocalPaymentsRenderer()
             ]
         );
-        $this->addColumn('odoo_payment_code',
+        $this->addColumn(
+            'odoo_payment_code',
             [
-                'label' => __('Odoo Payment'),
+                'label'    => __('Odoo Payment'),
                 'renderer' => false
             ]
         );

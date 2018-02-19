@@ -16,6 +16,7 @@ class Data extends AbstractHelper
     use ConfigurableTrait;
     /**
      * All the website stores.
+     *
      * @var array
      */
     static public $stores = [];
@@ -32,6 +33,7 @@ class Data extends AbstractHelper
 
     /**
      * Config xml base path.
+     *
      * @const XML_PATH
      */
     const XML_PATH = 'swisspostapi/';
@@ -39,6 +41,7 @@ class Data extends AbstractHelper
 
     /**
      * Config xml base path for connection.
+     *
      * @const XML_PATH_CONNECTION
      */
     const XML_PATH_CONNECTION = 'swisspostapi/connection/';
@@ -46,8 +49,8 @@ class Data extends AbstractHelper
     /**
      * Data constructor.
      *
-     * @param \Magento\Framework\App\Helper\Context $context
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Framework\App\Helper\Context      $context
+     * @param \Magento\Framework\ObjectManagerInterface  $objectManager
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      */
     public function __construct(
@@ -62,7 +65,7 @@ class Data extends AbstractHelper
     }
 
     /**
-     * @param $code
+     * @param      $code
      * @param null $storeId
      *
      * @return mixed
@@ -92,9 +95,12 @@ class Data extends AbstractHelper
      */
     public function getStoresLanguageCode($storeId)
     {
-        list(, $locale) = explode('_', strtolower($this->getConfigValue('general/locale/code',
-                $storeId
-            )
+        list(, $locale) = explode(
+            '_', strtolower(
+                $this->getConfigValue(
+                    'general/locale/code',
+                    $storeId
+                )
             )
         );
         return $locale;

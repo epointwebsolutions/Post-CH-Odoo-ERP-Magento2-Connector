@@ -19,6 +19,7 @@ class MediaFactory
 
     /**
      * Object manager.
+     *
      * @var \Magento\Framework\App\ObjectManager::getInstance() $objectManager
      */
     protected $objectManager;
@@ -58,13 +59,16 @@ class MediaFactory
         $this->io = $io;
         // Create
         if (!is_dir($this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH)) {
-            $this->io->mkdir($this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH,
-                0775);
+            $this->io->mkdir(
+                $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH,
+                0775
+            );
         }
     }
 
     /**
      * Create a file that can be attached to product.
+     *
      * @return file
      */
     public function create(ApiImage $apiImage)
@@ -77,8 +81,8 @@ class MediaFactory
             throw new \Exception(__('Missing media name content.'));
         }
         $writer = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-        $localPath = $this->directoryList->getPath(DirectoryList::MEDIA). DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH  . $fileName;
-        $file = $writer->openFile( self::IMPORT_TMP_DIR_PATH  . $fileName, 'w');
+        $localPath = $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH . $fileName;
+        $file = $writer->openFile(self::IMPORT_TMP_DIR_PATH . $fileName, 'w');
         // @todo a better implementation with properly logging.
         try {
             $file->lock();

@@ -78,7 +78,7 @@ class Product extends BaseExchange
     /**
      * @var \Epoint\SwisspostCatalog\Model\Inventory
      */
-    protected  $inventoryModel;
+    protected $inventoryModel;
 
     /**
      * @var \Epoint\SwisspostSales\Helper\ProductTax
@@ -299,6 +299,7 @@ class Product extends BaseExchange
 
     /**
      * Updating product stock
+     *
      * @param ProductInterface $product
      * @param                  $apiProducts
      */
@@ -351,7 +352,7 @@ class Product extends BaseExchange
         // Set websites
         static $websitesIds;
         if (!isset($websitesIds)) {
-            foreach($this->storeManager->getWebsites() as $website) {
+            foreach ($this->storeManager->getWebsites() as $website) {
                 $websitesIds[] = $website->getId();
             }
         }
@@ -490,7 +491,7 @@ class Product extends BaseExchange
     public function execute()
     {
         /** @var \Epoint\SwisspostCatalog\Helper\Data $helper */
-        if($this->isEnabled()) {
+        if ($this->isEnabled()) {
             /** @var \Epoint\SwisspostApi\Model\Api\Lists $itemList */
             $listFactory = $this->listFactory();
             // Before we start trigger the import action,
@@ -499,7 +500,7 @@ class Product extends BaseExchange
             $filter = [];
             // If the limiter has any other value beside the default one (0)
             // we add it to the filter
-            if ($limitImport > 0){
+            if ($limitImport > 0) {
                 $filter['limit'] = (int)$limitImport;
             }
             /** @var \Epoint\SwisspostApi\Model\Api\ApiDataObject $items */

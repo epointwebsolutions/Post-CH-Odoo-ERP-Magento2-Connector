@@ -16,7 +16,7 @@ class DynamicTaxClassMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function getActiveLocalTaxClassRenderer()
     {
-        if (!$this->localTaxClassRenderer){
+        if (!$this->localTaxClassRenderer) {
             $this->localTaxClassRenderer = $this->getLayout()->createBlock(
                 '\Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicTaxClassFields\LocalTaxClassSelector',
                 '', ['data' => ['is_render_to_js_template' => true]]
@@ -30,15 +30,17 @@ class DynamicTaxClassMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function _prepareToRender()
     {
-        $this->addColumn('local_tax_class_code',
+        $this->addColumn(
+            'local_tax_class_code',
             [
-                'label' => __('Local Tax Class'),
+                'label'    => __('Local Tax Class'),
                 'renderer' => $this->getActiveLocalTaxClassRenderer()
             ]
         );
-        $this->addColumn('odoo_tax_class_code',
+        $this->addColumn(
+            'odoo_tax_class_code',
             [
-                'label' => __('Odoo Tax Class'),
+                'label'    => __('Odoo Tax Class'),
                 'renderer' => false
             ]
         );

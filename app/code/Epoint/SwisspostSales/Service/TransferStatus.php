@@ -85,11 +85,12 @@ class TransferStatus extends BaseExchange
             // Load local order
             if ($order = $this->objectManager->create(
                 LocalOrder::class
-            )->loadByIncrementId($orderIncrementId)) {
+            )->loadByIncrementId($orderIncrementId)
+            ) {
                 return [$transferData, $order];
             }
         }
-        return [[],null];
+        return [[], null];
     }
 
     /**
@@ -104,8 +105,8 @@ class TransferStatus extends BaseExchange
         $outputMessage = '';
 
         // Checking payment status
-        if($transferData['state']){
-            switch (strtolower($transferData['state'])){
+        if ($transferData['state']) {
+            switch (strtolower($transferData['state'])) {
                 case 'done':
                     // Managing shipment
                     $shipment = null;
@@ -126,7 +127,7 @@ class TransferStatus extends BaseExchange
                     }
 
                     // attach tracking info
-                    if($shipment && $shipment->getId()) {
+                    if ($shipment && $shipment->getId()) {
                         $this->orderHelper->setTrackingNumber($order, $shipment, $transferData);
                     }
                     // Updating output message

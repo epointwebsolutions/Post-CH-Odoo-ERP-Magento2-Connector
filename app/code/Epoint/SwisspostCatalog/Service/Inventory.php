@@ -31,7 +31,7 @@ class Inventory extends BaseExchange
     /**
      * @var \Epoint\SwisspostCatalog\Model\Inventory
      */
-    protected  $inventoryModel;
+    protected $inventoryModel;
 
     /**
      * Inventory constructor.
@@ -68,8 +68,10 @@ class Inventory extends BaseExchange
             $product = $this->inventoryHelper->getProduct($inventory);
             if (!$product || !$product->getId()) {
                 throw new \Exception(
-                    sprintf(__('Missing product.'),
-                    $inventory->get('product_code'))
+                    sprintf(
+                        __('Missing product.'),
+                        $inventory->get('product_code')
+                    )
                 );
             }
 

@@ -41,12 +41,12 @@ class ApiBeforeCreateSaleOrder extends BaseObserver
     /**
      * ApiBeforeCreateSaleOrder constructor.
      *
-     * @param LoggerInterface        $logger
-     * @param ObjectManagerInterface $objectManager
-     * @param ShippingHelper         $shippingHelper
-     * @param PaymentHelper          $paymentHelper
-     * @param ProductTaxHelper       $productTaxHelper
-     * @param \Magento\Catalog\Api\ProductRepositoryInterface       $productRepository
+     * @param LoggerInterface                                 $logger
+     * @param ObjectManagerInterface                          $objectManager
+     * @param ShippingHelper                                  $shippingHelper
+     * @param PaymentHelper                                   $paymentHelper
+     * @param ProductTaxHelper                                $productTaxHelper
+     * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      */
     public function __construct(
         LoggerInterface $logger,
@@ -107,8 +107,8 @@ class ApiBeforeCreateSaleOrder extends BaseObserver
     /**
      * Convert product sales order.
      *
-     * @param $orderItem`
-     *    The order item.
+     * @param $orderItem `
+     *                   The order item.
      *
      * @return array
      *  The structured API order item.
@@ -131,7 +131,7 @@ class ApiBeforeCreateSaleOrder extends BaseObserver
         $item['discount'] = $orderItemDiscount > 0 && $item['quantity'] > 0 ? $orderItemDiscount : 0;
         // Convert discount to percent
         if ($item['discount'] > 0) {
-            $percent = ($item['discount']*100)/$orderItem->getOriginalPrice();
+            $percent = ($item['discount'] * 100) / $orderItem->getOriginalPrice();
             $item['discount'] = number_format(round($percent), 1);
         }
         // Product description

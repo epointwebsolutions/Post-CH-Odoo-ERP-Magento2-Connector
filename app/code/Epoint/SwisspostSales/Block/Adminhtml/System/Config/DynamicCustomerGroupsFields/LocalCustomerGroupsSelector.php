@@ -23,7 +23,7 @@ class LocalCustomerGroupsSelector extends \Magento\Framework\View\Element\Html\S
     public function __construct(
         Context $context,
         CustomerGroupCollection $customerGroupCollection
-    ){
+    ) {
         $this->customerGroupCollection = $customerGroupCollection;
         parent::__construct($context);
     }
@@ -47,6 +47,7 @@ class LocalCustomerGroupsSelector extends \Magento\Framework\View\Element\Html\S
 
     /**
      * Return a list with available options
+     *
      * @return array
      */
     public function getActiveCustomerGroups()
@@ -56,6 +57,7 @@ class LocalCustomerGroupsSelector extends \Magento\Framework\View\Element\Html\S
 
     /**
      * Sets name for input element
+     *
      * @param $value
      *
      * @return mixed

@@ -32,13 +32,20 @@ class Index extends \Magento\Backend\App\Action
      */
     protected $paymentHelper;
 
+    /**
+     * Index constructor.
+     *
+     * @param Context            $context
+     * @param PaymentStatus      $orderPaymentStatusService
+     * @param SwisspostResources $apiResource
+     * @param PaymentHelper      $paymentHelper
+     */
     public function __construct(
         Context $context,
         PaymentStatus $orderPaymentStatusService,
         SwisspostResources $apiResource,
         PaymentHelper $paymentHelper
-    )
-    {
+    ) {
         parent::__construct($context);
         $this->orderPaymentStatusService = $orderPaymentStatusService;
         $this->apiResource = $apiResource;
@@ -47,6 +54,7 @@ class Index extends \Magento\Backend\App\Action
 
     /**
      * Execute command
+     *
      * @throws \Exception
      */
     public function execute()

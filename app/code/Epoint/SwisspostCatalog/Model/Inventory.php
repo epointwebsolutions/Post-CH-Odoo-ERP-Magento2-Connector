@@ -28,7 +28,7 @@ class Inventory
     public function __construct(
         StockRegistryInterface $stockRegistry,
         LoggerInterface $logger
-    ){
+    ) {
         $this->stockRegistry = $stockRegistry;
         $this->logger = $logger;
     }
@@ -44,7 +44,7 @@ class Inventory
     private function prepare($qtyOnSale, $saleOK)
     {
         return [
-            'is_in_stock' => $qtyOnSale > 0 && $saleOK ? 1 : 0,
+            'is_in_stock'                 => $qtyOnSale > 0 && $saleOK ? 1 : 0,
             'qty'                         => MAX(
                 0, $qtyOnSale
             ),
@@ -72,7 +72,7 @@ class Inventory
         /** @var \Magento\CatalogInventory\Api\Data\StockItemInterface $stockItem */
         $stockItem = $this->stockRegistry->getStockItem($product->getId());
         try {
-            foreach ($data as $property=>$value){
+            foreach ($data as $property => $value) {
                 $stockItem->setData($property, $value);
             }
             $product->setQuantityAndStockStatus(['qty' => $data['qty'], 'is_in_stock' => $data['is_in_stock']]);

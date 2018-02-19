@@ -20,24 +20,28 @@ class Client extends SwissPostClient
 
     /**
      * Curl connect timeout.
+     *
      * @const CONNET_TIMEOUT
      */
     const CONNECT_TIMEOUT = 5;
 
     /**
      * Curl response timeout
+     *
      * @const RESPONSE_TIMEOUT
      */
     private $responseTimeout = 15;
 
     /**
      * Session id provided from json response.
+     *
      * @var string
      */
     private $session_id = '';
 
     /**
      * md5 connection hash
+     *
      * @var string
      */
     private $md5 = '';
@@ -199,7 +203,7 @@ class Client extends SwissPostClient
             // Return result object.
             $debug = $this->debug[sizeof($this->debug) - 1];
             $result = new SwissPostResult($result_data, $debug);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             // Output exception
             $this->logException($e);
             $result_data = [];
@@ -208,7 +212,7 @@ class Client extends SwissPostClient
             $result = new SwissPostResult($result_data, $debug);
         }
         // Sending email with the request/result to defined emails from config
-        if($this->emailHelper && $this->emailHelper->isLoggingEnabled()){
+        if ($this->emailHelper && $this->emailHelper->isLoggingEnabled()) {
             $this->emailHelper->send($result);
         }
 
@@ -250,24 +254,29 @@ class Client extends SwissPostClient
         // Build base service data.
         $args = [
             "jsonrpc" => $this->jsonrpc,
-            "id" => "" . rand(0, 10000),
-            "method" => 'call',
-            "params" => $data,
+            "id"      => "" . rand(0, 10000),
+            "method"  => 'call',
+            "params"  => $data,
         ];
         $url = rtrim($this->baseLocation, '/') . '/' . $method;
         $output = $this->curl($url, $args);
         $end = microtime(true);
         $this->debug(
-            sprintf(__('SwissPost API call: %s, request: %s, response: %s, duration: %s'),
-                $url, json_encode($args), $output, round($end - $start, 4))
+            sprintf(
+                __('SwissPost API call: %s, request: %s, response: %s, duration: %s'),
+                $url, json_encode($args), $output, round($end - $start, 4)
+            )
         );
         $result = [];
         if ($output) {
             $result = json_decode($output, true);
         }
         if (!is_array($result)) {
-            $this->warning(sprintf(__('Error getting json content from SwissPost API: %s'),
-                    $output)
+            $this->warning(
+                sprintf(
+                    __('Error getting json content from SwissPost API: %s'),
+                    $output
+                )
             );
         }
         return $result;
@@ -311,7 +320,7 @@ class Client extends SwissPostClient
     {
         // init the debug.
         $debug = [
-            'url' => $url,
+            'url'      => $url,
             'error_no' => -1,
         ];
         // Call.
@@ -328,8 +337,8 @@ class Client extends SwissPostClient
             $information = curl_getinfo($this->curlResource);
 
             $debug = [
-                'url' => $url,
-                'data' => print_r(json_decode($data, true), 1),
+                'url'    => $url,
+                'data'   => print_r(json_decode($data, true), 1),
                 'result' => $result,
             ];
 
@@ -378,38 +387,48 @@ class Client extends SwissPostClient
         $result = $this->__callService(
             'web/session/get_session_info', [
             'session_id' => null,
-            'context' => new \StdClass(),
+            'context'    => new \StdClass(),
         ], 0
         );
         $this->results[] = $result;
         // Validate response.
         if (isset($result['error'])) {
-            $this->debug(sprintf(__('Error connecting to SwissPost API: %s'),
-                $result['error']));
+            $this->debug(
+                sprintf(
+                    __('Error connecting to SwissPost API: %s'),
+                    $result['error']
+                )
+            );
             return false;
         }
         $data = $this->getResult($result);
         if (isset($data['session_id'])) {
             $this->session_id = $data['session_id'];
         }
-        $this->md5 = md5($this->session_id,
-            @file_get_contents($this->cookieFilePath));
+        $this->md5 = md5(
+            $this->session_id,
+            @file_get_contents($this->cookieFilePath)
+        );
         // Call auth
         $result = $this->__callService(
             'web/session/authenticate', [
-            'db' => $this->db,
-            'login' => $this->login,
-            'password' => $this->password,
+            'db'            => $this->db,
+            'login'         => $this->login,
+            'password'      => $this->password,
             'base_location' => $this->baseLocation,
-            'session_id' => $this->session_id,
+            'session_id'    => $this->session_id,
         ],
             0
         );
         $this->results[] = $result;
         // Validate response.
         if (isset($result['error'])) {
-            $this->debug(sprintf(__('Error authenticate to SwissPost API: %s'),
-                $result['error']));
+            $this->debug(
+                sprintf(
+                    __('Error authenticate to SwissPost API: %s'),
+                    $result['error']
+                )
+            );
             return false;
         }
         $data = $this->getResult($result);
@@ -442,8 +461,12 @@ class Client extends SwissPostClient
                 $cookie['httponly'] = false;
             }
             // we only care for valid cookie def lines
-            if (strlen($line) > 0 && $line[0] != '#' && substr_count($line,
-                    "\t") == 6) {
+            if (strlen($line) > 0 && $line[0] != '#'
+                && substr_count(
+                    $line,
+                    "\t"
+                ) == 6
+            ) {
                 // get tokens in an array
                 $tokens = explode("\t", $line);
                 // trim the tokens

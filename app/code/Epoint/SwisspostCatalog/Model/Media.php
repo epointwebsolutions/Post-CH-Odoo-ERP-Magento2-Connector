@@ -16,6 +16,7 @@ class Media
 
     /**
      * Media constructor.
+     *
      * @param File $file
      */
     public function __construct(File $file)
@@ -36,7 +37,7 @@ class Media
      */
     public function delete()
     {
-        if($this->getLocalPath()) {
+        if ($this->getLocalPath()) {
             if ($this->file->isExists($this->getLocalPath())) {
                 $this->file->deleteFile($this->apiImage->getLocalPath());
             }
@@ -45,11 +46,12 @@ class Media
 
     /**
      * Get file name
+     *
      * @return mixed
      */
     public function getName()
     {
-        if($this->apiImage) {
+        if ($this->apiImage) {
             return $this->apiImage->getName();
         }
     }
@@ -61,7 +63,7 @@ class Media
      */
     public function getLocalPath()
     {
-        if($this->apiImage) {
+        if ($this->apiImage) {
             return $this->apiImage->getLocalPath();
         }
     }

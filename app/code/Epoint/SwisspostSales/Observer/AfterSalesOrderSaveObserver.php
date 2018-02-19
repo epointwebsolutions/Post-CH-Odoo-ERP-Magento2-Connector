@@ -30,9 +30,9 @@ class AfterSalesOrderSaveObserver extends BaseObserver
     /**
      * AfterSalesOrderSaveObserver constructor.
      *
-     * @param LoggerInterface $logger
-     * @param ObjectManagerInterface   $objectManager
-     * @param OrderService    $orderService
+     * @param LoggerInterface        $logger
+     * @param ObjectManagerInterface $objectManager
+     * @param OrderService           $orderService
      */
     public function __construct(
         LoggerInterface $logger,
@@ -57,15 +57,15 @@ class AfterSalesOrderSaveObserver extends BaseObserver
         /** @var \Magento\Sales\Api\Data\OrderInterface $order */
         $order = $observer->getEvent()->getOrder();
         // Stop execution.
-        if($order->getSentOdoo()){
-            return ;
+        if ($order->getSentOdoo()) {
+            return;
         }
 
         try {
             // If the order has been placed by a guest, the order status will be set to export failure status
             // and the order will be sent by the cron
             // If not we trigger the export order action
-            if ($order->getCustomerIsGuest()){
+            if ($order->getCustomerIsGuest()) {
                 // Add message and set new status.
                 $order->setStatus($this->orderHelper->getExportFailureNewStatus());
                 $message = __('Order status has been set to be On Hold.');

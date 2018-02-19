@@ -29,7 +29,7 @@ class LocalTaxClassSelector extends \Magento\Framework\View\Element\Html\Select
         Context $context,
         ObjectManagerInterface $objectManager,
         ProductTaxClassSource $productTaxClassSource
-    ){
+    ) {
         $this->objectManager = $objectManager;
         $this->productTaxClassSource = $productTaxClassSource;
         parent::__construct($context);
@@ -55,6 +55,7 @@ class LocalTaxClassSelector extends \Magento\Framework\View\Element\Html\Select
 
     /**
      * Return a list with available options
+     *
      * @return array
      */
     public function getAllProductTaxClasses()
@@ -77,6 +78,7 @@ class LocalTaxClassSelector extends \Magento\Framework\View\Element\Html\Select
      * Sets name for input element
      *
      * @param string $value
+     *
      * @return $this
      */
     public function setInputName($value)

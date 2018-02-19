@@ -7,10 +7,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Magento\Framework\App\State as AppState;
-use Epoint\SwisspostApi\Model\Api\Product as ApiProductModel;
-use Epoint\SwisspostCatalog\Service\Product as ProductService;
-use Epoint\SwisspostApi\Model\Api\Lists\Product as ApiProductList;
-use Epoint\SwisspostCatalog\Helper\Product as ProductHelper;
+use Epoint\SwisspostApi\Model\Api\Product\Proxy as ApiProductModel;
+use Epoint\SwisspostCatalog\Service\Product\Proxy as ProductService;
+use Epoint\SwisspostApi\Model\Api\Lists\Product\Proxy as ApiProductList;
+use Epoint\SwisspostCatalog\Helper\Product\Proxy as ProductHelper;
 
 class importProductsCommand extends Command
 {
@@ -20,11 +20,6 @@ class importProductsCommand extends Command
      * @const PRODUCT_ARGUMENT
      */
     const PRODUCT_ARGUMENT = 'sku';
-
-    /**
-     * @var \Magento\Framework\App\ObjectManager $objectManager
-     */
-    private $objectManager;
 
     /**
      * @var AppState
@@ -52,13 +47,35 @@ class importProductsCommand extends Command
     protected $productHelper;
 
     /**
+     * importProductsCommand constructor.
+     *
+     * @param \Magento\Framework\App\State                   $appState
+     * @param \Epoint\SwisspostCatalog\Service\Product\Proxy $productService
+     * @param \Epoint\SwisspostCatalog\Helper\Product\Proxy  $productHelper
+     * @param \Epoint\SwisspostApi\Model\Api\Product\Proxy   $apiProductModel
+     */
+    public function __construct(
+        AppState $appState,
+        ProductService $productService,
+        ProductHelper $productHelper,
+        ApiProductModel $apiProductModel
+    ) {
+        $this->appState = $appState;
+        $this->productService = $productService;
+        $this->productHelper = $productHelper;
+        $this->apiProductModel = $apiProductModel;
+        parent::__construct();
+    }
+
+    /**
      * Implement configure method.
      */
     protected function configure()
     {
         $this->setName('epoint-swisspostapi:importProducts')
             ->setDescription(__('Run importProducts'))
-            ->setDefinition([
+            ->setDefinition(
+                [
                     new InputArgument(
                         self::PRODUCT_ARGUMENT,
                         InputArgument::OPTIONAL,
@@ -66,12 +83,6 @@ class importProductsCommand extends Command
                     )
                 ]
             );
-        $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->appState = $this->objectManager->get(\Magento\Framework\App\State::class);
-        $this->apiProductModel = $this->objectManager->get(\Epoint\SwisspostApi\Model\Api\Product::class);
-        $this->productService = $this->objectManager->get(\Epoint\SwisspostCatalog\Service\Product::class);
-        $this->productHelper = $this->objectManager->get(\Epoint\SwisspostCatalog\Helper\Product::class);
-        $this->apiProductList = $this->productService->listFactory();
     }
 
     /**
@@ -82,6 +93,8 @@ class importProductsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->apiProductList = $this->productService->listFactory();
+
         // Set area code.
         $this->appState->setAreaCode('adminhtml');
         // Getting the product to be imported sku
@@ -99,7 +112,7 @@ class importProductsCommand extends Command
             $filter = [];
             // If the limiter has any other value beside the default one (0)
             // we add it to the filter
-            if ($limitImport > 0){
+            if ($limitImport > 0) {
                 $filter['limit'] = (int)$limitImport;
             }
             // Trigger the action
@@ -110,8 +123,12 @@ class importProductsCommand extends Command
             $processed = $this->productService->run($products);
             foreach ($processed as $product) {
                 if ($product) {
-                    $output->writeln(sprintf(__('Successful imported product: %s'),
-                        $product->getSKU()));
+                    $output->writeln(
+                        sprintf(
+                            __('Successful imported product: %s'),
+                            $product->getSKU()
+                        )
+                    );
                 }
             }
         } else {

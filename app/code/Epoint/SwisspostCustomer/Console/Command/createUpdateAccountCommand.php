@@ -6,6 +6,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use \Epoint\SwisspostApi\Model\Api\Account\Proxy as AccountApiModel;
+use \Magento\Customer\Model\Customer\Proxy as CustomerModel;
+use \Magento\Framework\App\State as AppState;
 
 class createUpdateAccountCommand extends Command
 {
@@ -17,9 +20,37 @@ class createUpdateAccountCommand extends Command
     const CUSTOMER_ID_ARGUMENT = 'customer';
 
     /**
-     * @var \Magento\Framework\App\ObjectManager $objectManager
+     * @var \Epoint\SwisspostApi\Model\Api\Account
      */
-    private $objectManager;
+    private $accountApiModel;
+
+    /**
+     * @var \Magento\Customer\Model\Customer
+     */
+    private $customerModel;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    private $appState;
+
+    /**
+     * createUpdateAccountCommand constructor.
+     *
+     * @param \Epoint\SwisspostApi\Model\Api\Account\Proxy $accountApiModel
+     * @param \Magento\Customer\Model\Customer\Proxy       $customerModel
+     * @param \Magento\Framework\App\State                 $appState
+     */
+    public function __construct(
+        AccountApiModel $accountApiModel,
+        CustomerModel $customerModel,
+        AppState $appState
+    ) {
+        $this->accountApiModel = $accountApiModel;
+        $this->customerModel = $customerModel;
+        $this->appState = $appState;
+        parent::__construct();
+    }
 
     /**
      * Implement configure method.
@@ -28,7 +59,8 @@ class createUpdateAccountCommand extends Command
     {
         $this->setName('epoint-swisspostapi:createUpdateAccount')
             ->setDescription(__('Run createUpdateAccount for a customer'))
-            ->setDefinition([
+            ->setDefinition(
+                [
                     new InputArgument(
                         self::CUSTOMER_ID_ARGUMENT,
                         InputArgument::REQUIRED,
@@ -36,8 +68,6 @@ class createUpdateAccountCommand extends Command
                     )
                 ]
             );
-        $this->objectManager
-            = \Magento\Framework\App\ObjectManager::getInstance();
     }
 
     /**
@@ -48,6 +78,9 @@ class createUpdateAccountCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set area code.
+        $this->appState->setAreaCode('adminhtml');
+
         // Getting the customer id
         $customer_id = $input->getArgument(self::CUSTOMER_ID_ARGUMENT);
         if (!$customer_id) {
@@ -55,29 +88,33 @@ class createUpdateAccountCommand extends Command
         }
 
         // Load local customer
-        $customer
-            = $this->objectManager->get(\Magento\Customer\Model\Customer::class)
-            ->load($customer_id);
+        $customer = $this->customerModel->load($customer_id);
 
         if (!$customer || !$customer->getId()) {
             throw new \Exception(__('Missing customer.'));
         }
 
-        $account
-            = $this->objectManager->get(\Epoint\SwisspostApi\Model\Api\Account::class)
-            ->getInstance($customer);
+        $account = $this->accountApiModel->getInstance($customer);
 
         // Export customer
         $result = $account->save();
 
-        // Processing respose
+        // Processing response
         if ($result->isOK()) {
-            $output->writeln(sprintf(__('Swisspost API create/update account successful, odoo id: %s'),
-                $result->get('odoo_id')));
+            $output->writeln(
+                sprintf(
+                    __('Swisspost API create/update account successful, odoo id: %s'),
+                    $result->get('odoo_id')
+                )
+            );
         } else {
-            $output->writeln(sprintf(__('Swisspost API create/update account fails, debug message: %s'),
+            $output->writeln(
+                sprintf(
+                    __('Swisspost API create/update account fails, debug message: %s'),
                     implode(
-                        "\n", $result->getDebug()))
+                        "\n", $result->getDebug()
+                    )
+                )
             );
         }
     }

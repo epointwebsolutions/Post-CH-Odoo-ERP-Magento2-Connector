@@ -17,8 +17,9 @@ class OrderTransferStatus
 
     /**
      * @param ToolbarContext $toolbar
-     * @param AbstractBlock $context
-     * @param ButtonList $buttonList
+     * @param AbstractBlock  $context
+     * @param ButtonList     $buttonList
+     *
      * @return array
      */
     public function beforePushButtons(
@@ -33,12 +34,13 @@ class OrderTransferStatus
         $orderId = $context->getRequest()->getParam('order_id');
 
         $message = __('Are you sure you want to check the order transfer status?');
-        $url = $context->getUrl('swisspost/order_transfer', ['order_id'=>$orderId]);
-        $buttonList->add('order_transfer_status',
+        $url = $context->getUrl('swisspost/order_transfer', ['order_id' => $orderId]);
+        $buttonList->add(
+            'order_transfer_status',
             [
-                'label' => __('Odoo Transfer Status'),
-                'on_click'    => "confirmSetLocation('{$message}', '{$url}')",
-                'class' => 'action-secondary'
+                'label'    => __('Odoo Transfer Status'),
+                'on_click' => "confirmSetLocation('{$message}', '{$url}')",
+                'class'    => 'action-secondary'
             ]
         );
 

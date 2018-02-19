@@ -16,7 +16,7 @@ class DynamicCustomerGroupsMapping extends \Magento\Config\Block\System\Config\F
      */
     protected function getActiveLocalCustomerGroupsRenderer()
     {
-        if (!$this->localCustomerGroupsRenderer){
+        if (!$this->localCustomerGroupsRenderer) {
             $this->localCustomerGroupsRenderer = $this->getLayout()->createBlock(
                 '\Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicCustomerGroupsFields\LocalCustomerGroupsSelector',
                 '', ['data' => ['is_render_to_js_template' => true]]
@@ -30,15 +30,17 @@ class DynamicCustomerGroupsMapping extends \Magento\Config\Block\System\Config\F
      */
     protected function _prepareToRender()
     {
-        $this->addColumn('local_customer_group_code',
+        $this->addColumn(
+            'local_customer_group_code',
             [
-                'label' => __('Local Customer Group'),
+                'label'    => __('Local Customer Group'),
                 'renderer' => $this->getActiveLocalCustomerGroupsRenderer()
             ]
         );
-        $this->addColumn('odoo_customer_group_code',
+        $this->addColumn(
+            'odoo_customer_group_code',
             [
-                'label' => __('Odoo Customer Group'),
+                'label'    => __('Odoo Customer Group'),
                 'renderer' => false
             ]
         );

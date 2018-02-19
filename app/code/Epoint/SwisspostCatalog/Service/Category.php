@@ -113,10 +113,15 @@ class Category extends BaseExchange
         // Load import language,
         $name = ucfirst($this->categoryHelper->getTitle($category));
         $url = strtolower($name);
-        $cleanurl = trim(preg_replace('/ +/', '',
-                    preg_replace('/[^A-Za-z0-9 ]/',
+        $cleanurl = trim(
+                preg_replace(
+                    '/ +/', '',
+                    preg_replace(
+                        '/[^A-Za-z0-9 ]/',
                         '',
-                        urldecode(html_entity_decode(strip_tags($url)))))
+                        urldecode(html_entity_decode(strip_tags($url)))
+                    )
+                )
             ) . '-' . $category->getExternalId() . '-' . rand(1, 100000);
         $categoryTmp->setName($name);
         // This will not be saved.
@@ -136,7 +141,7 @@ class Category extends BaseExchange
             'custom_attributes' => [
                 "display_mode"            => "PRODUCTS",
                 "is_anchor"               => "1",
-                "description"             =>  $this->categoryHelper->getDescription($category),
+                "description"             => $this->categoryHelper->getDescription($category),
                 Entity::OBSERVER_VARIABLE => $category,
             ]
         ];
@@ -181,7 +186,7 @@ class Category extends BaseExchange
     /**
      * Update category translatable attributes for configured store store
      *
-     * @param $apiCategory
+     * @param                                 $apiCategory
      * @param \Magento\Catalog\Model\Category $category
      */
     public function setCategoryAttributesForStore(
@@ -223,8 +228,10 @@ class Category extends BaseExchange
 
         // Save top import category.
         $imported = [];
-        $importCategories = $this->categoryHelper->getChidren($items,
-            $externRootCategory);
+        $importCategories = $this->categoryHelper->getChidren(
+            $items,
+            $externRootCategory
+        );
         foreach ($importCategories as $item) {
             if ($item->getExternalId()
                 == $externRootCategory->getExternalId()

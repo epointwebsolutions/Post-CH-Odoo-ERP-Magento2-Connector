@@ -3,6 +3,7 @@
  * Copyright © 2013-2017 Epoint, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Epoint\SwisspostCustomer\Observer;
 
 use Epoint\SwisspostApi\Observer\BaseObserver;
@@ -22,6 +23,7 @@ class AfterCustomerSaveObserver extends BaseObserver
 
     /**
      * because the observer is called twice we use the flag to save customer to Odoo only once
+     *
      * @var bool
      */
     private $canCreateUpdateAccount = true;
@@ -29,9 +31,9 @@ class AfterCustomerSaveObserver extends BaseObserver
     /**
      * AfterCustomerSaveObserver constructor.
      *
-     * @param LoggerInterface $logger
-     * @param ObjectManagerInterface   $objectManager
-     * @param ApiModelAccount $apiModelAccount
+     * @param LoggerInterface        $logger
+     * @param ObjectManagerInterface $objectManager
+     * @param ApiModelAccount        $apiModelAccount
      */
     public function __construct(
         LoggerInterface $logger,
@@ -46,6 +48,7 @@ class AfterCustomerSaveObserver extends BaseObserver
      * Handler for 'customer_save_after' event.
      *
      * @param \Magento\Framework\Event\Observer $observer
+     *
      * @return void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -56,9 +59,9 @@ class AfterCustomerSaveObserver extends BaseObserver
             $customer = $observer->getEvent()->getCustomer();
             if ($customer && $customer->getId()) {
                 $account = $this->apiModelAccount->getInstance($customer);
-                try{
+                try {
                     $result = $account->save();
-                }catch (\Exception $e){
+                } catch (\Exception $e) {
                     $this->logException($e);
                 }
             } else {

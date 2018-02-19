@@ -16,7 +16,7 @@ class DynamicShippingMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function getActiveLocalShippingRenderer()
     {
-        if (!$this->localShippingRenderer){
+        if (!$this->localShippingRenderer) {
             $this->localShippingRenderer = $this->getLayout()->createBlock(
                 '\Epoint\SwisspostSales\Block\Adminhtml\System\Config\DynamicShippingFields\LocalShippingSelector',
                 '', ['data' => ['is_render_to_js_template' => true]]
@@ -30,15 +30,17 @@ class DynamicShippingMapping extends \Magento\Config\Block\System\Config\Form\Fi
      */
     protected function _prepareToRender()
     {
-        $this->addColumn('local_shipping_code',
+        $this->addColumn(
+            'local_shipping_code',
             [
-                'label' => __('Local Shipping'),
+                'label'    => __('Local Shipping'),
                 'renderer' => $this->getActiveLocalShippingRenderer()
             ]
         );
-        $this->addColumn('odoo_shipping_code',
+        $this->addColumn(
+            'odoo_shipping_code',
             [
-                'label' => __('Odoo Shipping'),
+                'label'    => __('Odoo Shipping'),
                 'renderer' => false
             ]
         );

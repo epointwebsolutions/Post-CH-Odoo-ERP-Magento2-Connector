@@ -83,15 +83,17 @@ class Order extends Data
 
     /**
      * Check if cron is enabled from config
+     *
      * @return bool
      */
     public function isCronEnabled()
     {
-        return $this->getConfigValue(self::XML_PATH . 'order/enable_export') ?  true:false;
+        return $this->getConfigValue(self::XML_PATH . 'order/enable_export') ? true : false;
     }
 
     /**
      * The order new status for successful export
+     *
      * @return mixed|string
      */
     public function getExportSuccessNewStatus()
@@ -120,6 +122,7 @@ class Order extends Data
     /**
      * Will return the accepted status for cron order export
      * Default order state is LocalOrder::STATE_HOLDED
+     *
      * @return mixed
      */
     public function getCronExportOrderConfigStatus()
@@ -154,7 +157,7 @@ class Order extends Data
             $transactionSave->save();
             //send notification code
             $order->addStatusHistoryComment(
-                __('The invoice has been create from'.' Magento-Odoo Integration module')
+                __('The invoice has been create from' . ' Magento-Odoo Integration module')
             )
                 ->save();
             return $invoice;
@@ -166,6 +169,7 @@ class Order extends Data
 
     /**
      * Will try to create an order shipment
+     *
      * @param LocalOrder $order
      *
      * @return LocalOrder\Shipment
@@ -179,7 +183,7 @@ class Order extends Data
         // Loop through order items
         foreach ($order->getAllItems() as $orderItem) {
             // Check if order item has qty to ship or is virtual
-            if (! $orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
+            if (!$orderItem->getQtyToShip() || $orderItem->getIsVirtual()) {
                 continue;
             }
             // Read the item qty for shipping
@@ -203,7 +207,7 @@ class Order extends Data
             $shipment->getOrder()->save();
             //send notification code
             $order->addStatusHistoryComment(
-                __('The shipment has been create from'.' Magento-Odoo Integration module')
+                __('The shipment has been create from' . ' Magento-Odoo Integration module')
             )
                 ->save();
         } catch (\Exception $e) {
@@ -224,7 +228,7 @@ class Order extends Data
         try {
             foreach ($params['tracking_number'] as $number) {
                 // If Number is not attached on this shipment, we can add it to shipment
-                if(!$this->existsTrackingNumber($shipment, $number)) {
+                if (!$this->existsTrackingNumber($shipment, $number)) {
                     $trackingDetail = array(
                         'carrier_code' => $order->getShippingDescription(),
                         'title'        => $order->getShippingDescription(),
@@ -251,6 +255,7 @@ class Order extends Data
 
     /**
      * Check if exists a number attached to a shipment
+     *
      * @param Shipment $shipment
      * @param          $number
      *
@@ -259,11 +264,11 @@ class Order extends Data
     public function existsTrackingNumber(Shipment $shipment, $number)
     {
         $trackNumbers = [];
-        foreach($shipment->getAllTracks() as $trackNumber) {
+        foreach ($shipment->getAllTracks() as $trackNumber) {
             $trackNumbers[] = $trackNumber->getNumber();
         }
         // Validating
-        if(in_array($number, $trackNumbers)){
+        if (in_array($number, $trackNumbers)) {
             return true;
         }
         return false;
@@ -271,6 +276,7 @@ class Order extends Data
 
     /**
      * Check if an invoice can be created
+     *
      * @param LocalOrder $order
      *
      * @return bool
@@ -285,6 +291,7 @@ class Order extends Data
 
     /**
      * Check if a shipment can be created
+     *
      * @param LocalOrder $order
      *
      * @return bool
@@ -308,23 +315,25 @@ class Order extends Data
     {
         $localOrderRef = '';
         // Extract local ref from external ref
-        if (($pos = strpos($externalOrderRef, "-")) !== FALSE) {
-            $localOrderRef = substr($externalOrderRef, $pos+1);
+        if (($pos = strpos($externalOrderRef, "-")) !== false) {
+            $localOrderRef = substr($externalOrderRef, $pos + 1);
         }
         return $localOrderRef;
     }
 
     /**
      * Check if export order as gift card is enabled in config
+     *
      * @return bool
      */
     public function isExportOrderCouponAsGiftCardEnabled()
     {
-        return $this->getConfigValue(self::XML_PATH . 'order_gift_cards/coupon_as_gift_card') ?  true:false;
+        return $this->getConfigValue(self::XML_PATH . 'order_gift_cards/coupon_as_gift_card') ? true : false;
     }
 
     /**
      * Will create a list of orders Ids only
+     *
      * @param array $orderList
      *
      * @return array
@@ -343,6 +352,7 @@ class Order extends Data
 
     /**
      * Will create a list of invoices ids from provided orders list
+     *
      * @param array $orderList
      *
      * @return array

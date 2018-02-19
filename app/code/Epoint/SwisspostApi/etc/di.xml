@@ -7,5 +7,5 @@
             </argument>
         </arguments>
     </type>
-    <preference for="Magento\Store\Block\Switcher" type="Epoint\SwisspostApi\Block\Switcher" />
+    <preference for="Magento\Store\Block\Switcher" type="Epoint\SwisspostApi\Block\Switcher"/>
 </config>

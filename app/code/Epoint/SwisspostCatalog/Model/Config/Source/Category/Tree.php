@@ -15,7 +15,7 @@ class Tree extends Data implements \Magento\Framework\Option\ArrayInterface
     public function getStoreCategories($sorted = false, $asCollection = false, $toLoad = true)
     {
         return $this->objectManager->get('\Magento\Catalog\Helper\Category')
-            ->getStoreCategories($sorted , $asCollection, $toLoad);
+            ->getStoreCategories($sorted, $asCollection, $toLoad);
     }
 
     /*
@@ -27,8 +27,7 @@ class Tree extends Data implements \Magento\Framework\Option\ArrayInterface
         $arr = $this->toArray();
         $ret = [];
 
-        foreach ($arr as $key => $value)
-        {
+        foreach ($arr as $key => $value) {
             $ret[] = [
                 'value' => $key,
                 'label' => $value
@@ -48,8 +47,8 @@ class Tree extends Data implements \Magento\Framework\Option\ArrayInterface
         $rootCategory = $this->objectManager->create('\Magento\Catalog\Model\Category')
             ->load($this->storeManager->getStore()->getRootCategoryId());
         $catagoryList[$rootCategory->getId()] = $rootCategory->getName();
-        $categories = $this->getStoreCategories(true,false,true);
-        foreach ($categories as $category){
+        $categories = $this->getStoreCategories(true, false, true);
+        foreach ($categories as $category) {
             $prefix = str_repeat('--', $category->getLevel());
             $catagoryList[$category->getEntityId()] = $prefix . $category->getName();
         }

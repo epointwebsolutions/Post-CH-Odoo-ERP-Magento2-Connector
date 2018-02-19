@@ -7,7 +7,7 @@ use Magento\Store\Model\ScopeInterface;
 trait ConfigurableTrait
 {
     /**
-     * @param $field
+     * @param      $field
      * @param null $storeId
      *
      * @return mixed
@@ -20,7 +20,7 @@ trait ConfigurableTrait
     }
 
     /**
-     * @param $field
+     * @param      $field
      * @param null $storeId
      *
      * @return mixed
@@ -33,24 +33,25 @@ trait ConfigurableTrait
     }
 
     /**
-     * @param $code
+     * @param      $code
      * @param null $storeId
      *
      * @return mixed
      */
-    public function getGeneralConfig($path , $storeId = null)
+    public function getGeneralConfig($path, $storeId = null)
     {
         return $this->getConfigValue($path, $storeId);
     }
 
     /**
      * Will provide the list of emails added in config for path
+     *
      * @return array
      */
     public function getEmailFromConfig($path)
     {
         static $processed;
-        if(isset($processed[$path])){
+        if (isset($processed[$path])) {
             return $processed[$path];
         }
         // The config values
@@ -60,14 +61,13 @@ trait ConfigurableTrait
         $emailList = array_map('trim', explode(",", $emailsAsString));
         // Constructing the list of emails which will be used
         $validEmailList = [];
-        foreach ($emailList as $email){
-            if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)){
+        foreach ($emailList as $email) {
+            if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $validEmailList[] = $email;
             }
         }
         $processed[$path] = $validEmailList;
         return $processed[$path];
-
     }
 }
 

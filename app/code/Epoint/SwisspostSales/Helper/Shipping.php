@@ -8,24 +8,28 @@ class Shipping extends Data
 {
     /**
      * Path for dynamic mapping
+     *
      * @const PATH_TO_DYNAMIC_SHIPPING_MAPPING
      */
     const PATH_TO_DYNAMIC_SHIPPING_MAPPING = 'shipping_mapping/dynamic_shipping_mapping';
 
     /**
      * Path for default mapping
+     *
      * @const PATH_TO_DEFAULT_SHIPPING_MAPPING
      */
     const PATH_TO_DEFAULT_SHIPPING_MAPPING = 'shipping_mapping/default_shipping_mapping';
 
     /**
      * Key for identifying local code mapping
+     *
      * @const KEY_FOR_LOCAL_CODE
      */
     const KEY_FOR_LOCAL_CODE = 'local_shipping_code';
 
     /**
      * Key for identifying default code mapping
+     *
      * @const KEY_FOR_ODOO_CODE
      */
     const KEY_FOR_ODOO_CODE = 'odoo_shipping_code';
@@ -48,7 +52,7 @@ class Shipping extends Data
     public function getExternalShippingCode($local)
     {
         // Getting the mapping value
-        if (!empty($externalCode = $this->getMappingConfiguration(self::KEY_FOR_LOCAL_CODE, $local, self::KEY_FOR_ODOO_CODE))){
+        if (!empty($externalCode = $this->getMappingConfiguration(self::KEY_FOR_LOCAL_CODE, $local, self::KEY_FOR_ODOO_CODE))) {
             return $externalCode;
         }
         // If we got here means no mapping has been found
@@ -69,9 +73,9 @@ class Shipping extends Data
         $mappingFields = json_decode($this->getConfigValue(self::XML_PATH . self::PATH_TO_DYNAMIC_SHIPPING_MAPPING), true);
 
         // Process data
-        if (!empty($mappingFields) && is_array($mappingFields)){
-            foreach ($mappingFields as $mappingKey => $mappingValues){
-                if (!empty($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)){
+        if (!empty($mappingFields) && is_array($mappingFields)) {
+            foreach ($mappingFields as $mappingKey => $mappingValues) {
+                if (!empty($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)) {
                     return $mappingValues[$keyToReturn];
                 }
             }

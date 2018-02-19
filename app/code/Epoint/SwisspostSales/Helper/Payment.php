@@ -8,24 +8,28 @@ class Payment extends Data
 {
     /**
      * Path for dynamic mapping
+     *
      * @const PATH_TO_DYNAMIC_PAYMENT_MAPPING
      */
     const PATH_TO_DYNAMIC_PAYMENT_MAPPING = 'payments_mapping/dynamic_payments_mapping';
 
     /**
      * Path for default mapping
+     *
      * @const PATH_TO_DEFAULT_PAYMENT_MAPPING
      */
     const PATH_TO_DEFAULT_PAYMENT_MAPPING = 'payments_mapping/default_payments_mapping';
 
     /**
      * Key for identifying local code mapping
+     *
      * @const KEY_FOR_LOCAL_CODE
      */
     const KEY_FOR_LOCAL_CODE = 'local_payment_code';
 
     /**
      * Key for identifying default code mapping
+     *
      * @const KEY_FOR_ODOO_CODE
      */
     const KEY_FOR_ODOO_CODE = 'odoo_payment_code';
@@ -48,7 +52,7 @@ class Payment extends Data
     public function getExternalPaymentCode($local)
     {
         // Getting the mapping value
-        if (!empty($externalCode = $this->getMappingConfiguration(self::KEY_FOR_LOCAL_CODE, $local, self::KEY_FOR_ODOO_CODE))){
+        if (!empty($externalCode = $this->getMappingConfiguration(self::KEY_FOR_LOCAL_CODE, $local, self::KEY_FOR_ODOO_CODE))) {
             return $externalCode;
         }
         // If we got here means no mapping has been found
@@ -68,9 +72,9 @@ class Payment extends Data
         // Reading the mapping from db
         $mappingFields = json_decode($this->getConfigValue(self::XML_PATH . self::PATH_TO_DYNAMIC_PAYMENT_MAPPING), true);
 
-        if (!empty($mappingFields) && is_array($mappingFields)){
-            foreach ($mappingFields as $mappingKey => $mappingValues){
-                if (!empty($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)){
+        if (!empty($mappingFields) && is_array($mappingFields)) {
+            foreach ($mappingFields as $mappingKey => $mappingValues) {
+                if (!empty($mappingValues[$keyToCheck]) && ($mappingValues[$keyToCheck] == $valueToCheck)) {
                     return $mappingValues[$keyToReturn];
                 }
             }

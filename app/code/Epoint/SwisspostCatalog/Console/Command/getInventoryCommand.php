@@ -6,8 +6,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Epoint\SwisspostApi\Model\Api\Lists\Inventory as ApiListInventory;
+use Epoint\SwisspostCatalog\Service\Inventory\Proxy as ServiceInventory;
+use \Magento\Framework\App\State as AppState;
 
-class getInventoryCommand extends Command {
+class getInventoryCommand extends Command
+{
 
     /**
      * Product argument
@@ -15,51 +19,81 @@ class getInventoryCommand extends Command {
     const PRODUCT_ARGUMENT = 'sku';
 
     /**
-     * @var \Magento\Framework\App\ObjectManager $_objectManager
+     * @var \Epoint\SwisspostApi\Model\Api\Lists\Inventory
      */
-    private $_objectManager;
+    private $apiListInventory;
+
+    /**
+     * @var \Epoint\SwisspostCatalog\Service\Inventory
+     */
+    private $serviceInventory;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
+    private $appState;
+
+    /**
+     * getInventoryCommand constructor.
+     *
+     * @param \Epoint\SwisspostApi\Model\Api\Lists\Inventory   $apiListInventory
+     * @param \Epoint\SwisspostCatalog\Service\Inventory\Proxy $serviceInventory
+     * @param AppState                                         $appState
+     */
+    public function __construct(
+        ApiListInventory $apiListInventory,
+        ServiceInventory $serviceInventory,
+        AppState $appState
+    ) {
+        $this->apiListInventory = $apiListInventory;
+        $this->serviceInventory = $serviceInventory;
+        $this->appState = $appState;
+        parent::__construct();
+    }
 
     /**
      * Implement configure method.
      */
-    protected function configure() {
+    protected function configure()
+    {
         $this->setName('epoint-swisspostapi:getInventory')
             ->setDescription(__('Run getInventory'))
-            ->setDefinition([
+            ->setDefinition(
+                [
                     new InputArgument(
                         self::PRODUCT_ARGUMENT,
                         InputArgument::OPTIONAL,
                         'Product'
                     )]
             );
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     }
 
     /**
      * Execute command method.
      *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        // Set area code.
+        $this->appState->setAreaCode('adminhtml');
+
         $product_sku = $input->getArgument(self::PRODUCT_ARGUMENT);
-        $inventory = $this->_objectManager->get(\Epoint\SwisspostApi\Model\Api\Lists\Inventory::class);
         $filter['product_codes'] = [];
-        if($product_sku){
+        if ($product_sku) {
             $filter['product_codes'] = [$product_sku];
         }
 
-        $values = $inventory->search($filter);
-        foreach ($values as $value){
+        $values = $this->apiListInventory->search($filter);
+        foreach ($values as $value) {
             print_r($value->getData());
         }
 
-        if($values){
-            $importer = $this->_objectManager->get(\Epoint\SwisspostCatalog\Service\Inventory::class);
-            $importer->run($values);
+        if ($values) {
+            $this->serviceInventory->run($values);
             $output->writeln(sprintf(__('Swisspost API load inventory request successful, stock items: %s'), count($values)));
-        }else{
+        } else {
             $output->writeln(sprintf(__('Swisspost API load inventory result no values')));
         }
     }

@@ -8,29 +8,31 @@ Use  Epoint\SwisspostApi\Helper\Api\Result as SwissPostResult;
  * Client SwissPost
  *
  */
-abstract class Client {
+abstract class Client
+{
 
-  protected $debug = [];
+    protected $debug = [];
 
-  protected $results = [];
-  /**
-   * Call the service
-   *
-   * @param       $method_url
-   * @param array $data
-   *
-   * @return SwissPostResult
-   */
-  abstract public function call($method_url, $data = []);
+    protected $results = [];
 
-  /**
-   * @return mixed
-   */
-  abstract public function connect();
+    /**
+     * Call the service
+     *
+     * @param       $method_url
+     * @param array $data
+     *
+     * @return SwissPostResult
+     */
+    abstract public function call($method_url, $data = []);
 
-  /**
-   * @return SwissPostResult
-   */
-  abstract public function getLastResult();
+    /**
+     * @return mixed
+     */
+    abstract public function connect();
+
+    /**
+     * @return SwissPostResult
+     */
+    abstract public function getLastResult();
 
 }

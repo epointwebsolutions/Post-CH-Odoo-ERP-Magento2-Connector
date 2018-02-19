@@ -38,6 +38,7 @@ class Index extends \Magento\Backend\App\Action
 
     /**
      * Execute command
+     *
      * @throws \Exception
      */
     public function execute()
@@ -84,10 +85,12 @@ class Index extends \Magento\Backend\App\Action
                 $outputMessage = sprintf(
                     __("%s: %s"), $result->get('status'), $result->get('comment')
                 );
-            } else if (is_string($result->get('error_no'))) {
-                $outputMessage = sprintf(__('Error on request, with error number %s'), $result->get('error_no'));
             } else {
-                $outputMessage = __('Request error!');
+                if (is_string($result->get('error_no'))) {
+                    $outputMessage = sprintf(__('Error on request, with error number %s'), $result->get('error_no'));
+                } else {
+                    $outputMessage = __('Request error!');
+                }
             }
             $this->messageManager->addErrorMessage($outputMessage);
             $outputMessage = $result->getDebugMessage();

@@ -30,6 +30,7 @@ trait LoggerTrait
 
     /**
      * Detailed debug information.
+     *
      * @param $message
      */
     protected function debug($message)
@@ -41,6 +42,7 @@ trait LoggerTrait
 
     /**
      * Exceptional occurrences that are not errors.
+     *
      * @param $message
      */
     protected function warning($message)

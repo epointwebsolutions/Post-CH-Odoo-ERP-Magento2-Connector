@@ -23,6 +23,7 @@ class Media
 
     /**
      * Object manager.
+     *
      * @var \Magento\Framework\App\ObjectManager::getInstance() $objectManager
      */
     protected $objectManager;
@@ -78,13 +79,16 @@ class Media
         $this->productRepository = $productRepository;
         // Create
         if (!is_dir($this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH)) {
-            $this->io->mkdir($this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH,
-                0775);
+            $this->io->mkdir(
+                $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . self::IMPORT_TMP_DIR_PATH,
+                0775
+            );
         }
     }
 
     /**
      * Will check if the product has any images attached
+     *
      * @param ModelProduct $product
      *
      * @return bool
@@ -93,7 +97,7 @@ class Media
     {
         // Getting the list of the product images
         $productImages = $product->getMediaGalleryImages();
-        if (count($productImages) > 0){
+        if (count($productImages) > 0) {
             return false;
         }
         return true;
@@ -101,6 +105,7 @@ class Media
 
     /**
      * Removing all the existing product images
+     *
      * @param ModelProduct $product
      */
     public function removeProductMediaGallery(ModelProduct $product)
@@ -110,14 +115,14 @@ class Media
         if (is_array($existingMediaGalleryEntries) && count($existingMediaGalleryEntries) > 0) {
             // Storing the paths of existing product images before we unset them
             $productImagePaths = [];
-            foreach ($existingMediaGalleryEntries as $image){
+            foreach ($existingMediaGalleryEntries as $image) {
                 $productImagePaths[] = $image->getFile();
             }
             // Unlink product images
             $product->setMediaGalleryEntries([]);
             $this->productRepository->save($product);
             // Deleting all the images previous assign to the product
-            foreach ($productImagePaths as $path){
+            foreach ($productImagePaths as $path) {
                 unlink($this->directoryList->getPath(DirectoryList::MEDIA) . self::CATALOG_PRODUCT_PATH . $path);
             }
         }
@@ -125,11 +130,12 @@ class Media
 
     /**
      * Will setup the first image from Media Gallery as default image
+     *
      * @param \Magento\Catalog\Api\Data\ProductInterface $product
      */
     public function setProductDefaultImage(
         ProductInterface $product
-    ){
+    ) {
         // Getting the product image gallery
         $productImages = $product->getMediaGalleryImages();
         if (count($productImages) > 0) {
@@ -153,25 +159,25 @@ class Media
         $images = [];
         // Request the product images from Odoo
         /** @var \Epoint\SwisspostApi\Model\Api\Image $image */
-        foreach ($apiProduct->getImages() as $image){
+        foreach ($apiProduct->getImages() as $image) {
             $media = $this->mediaFactory->create($image);
-            if($media) {
+            if ($media) {
                 $images[] = $media;
             }
         }
 
-        if($images && !empty($product->getId())){
+        if ($images && !empty($product->getId())) {
             //Remove existing images.
             $this->removeProductMediaGallery($product);
 
             // Adding the images to the product media gallery
-            foreach ($images as $image){
+            foreach ($images as $image) {
                 $product->addImageToMediaGallery($image->getLocalPath(), null, true, false);
             }
             $product->save();
             // Setup default image
             $this->setProductDefaultImage($product);
         }
-        $images = NULL;
+        $images = null;
     }
 }
