@@ -221,18 +221,22 @@ class PaymentStatus extends BaseExchange
                 /** @var array \Magento\Sales\Model\Order $selectedOrders */
                 $selectedOrders = $listFactory->getSentOrders($orderStatus);
 
+                // Remove all the orders that have not been exported
+                $selectedOrders = $this->orderHelper->extractExportedOrders($selectedOrders);
+
                 // Getting the ids list for selected orders
                 $orderIdsList = $this->orderHelper->extractOrderIdsFromOrderList($selectedOrders);
-                // Getting the all the invoice ids of the selected orders
-                $orderInvoiceIdsList = $this->orderHelper->getOrdersInvoiceFromList($selectedOrders);
 
-                // Check orders payment status
-                $result = $this->apiResource->checkOrdersPaymentStatus($orderIdsList, []);
+                // Check orders transfer status
+                if (count($orderIdsList) > 0) {
+                    // Check orders payment status
+                    $result = $this->apiResource->checkOrdersPaymentStatus($orderIdsList, []);
 
-                // Processing the result
-                if ($result->isOK()) {
-                    // Run import.
-                    $this->run($result->get('values'));
+                    // Processing the result
+                    if ($result->isOK()) {
+                        // Run import.
+                        $this->run($result->get('values'));
+                    }
                 }
             }
         }
