@@ -14,6 +14,7 @@ use Magento\Sales\Model\Convert\Order as ConvertOrder;
 use \Magento\Sales\Model\Order\Shipment\Track as ShipmentTrack;
 use Epoint\SwisspostApi\Model\Api\SaleOrder as ApiModelSaleOrder;
 use Epoint\SwisspostApi\Model\Api\Invoice as ApiModelInvoice;
+use \Epoint\SwisspostApi\Model\Entity as SwisspostModelEntity;
 
 class Order extends Data
 {
@@ -48,18 +49,23 @@ class Order extends Data
     protected $apiModelInvoice;
 
     /**
+     * @var \Epoint\SwisspostApi\Model\Entity
+     */
+    protected  $swisspostModelEntity;
+
+    /**
      * Order constructor.
-     *
-     * @param Context                $context
-     * @param ObjectManagerInterface $objectManager
-     * @param StoreManagerInterface  $storeManager
-     * @param InvoiceService         $invoiceService
-     * @param Transaction            $transaction
-     * @param LoggerInterface        $logger
-     * @param ConvertOrder           $convertOrder
-     * @param ShipmentTrack          $shipmentTrack
-     * @param ApiModelSaleOrder      $apiModelSaleOrder
-     * @param ApiModelInvoice        $apiModelInvoice
+     * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
+     * @param \Magento\Framework\DB\Transaction $transaction
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Sales\Model\Convert\Order $convertOrder
+     * @param \Magento\Sales\Model\Order\Shipment\Track $shipmentTrack
+     * @param \Epoint\SwisspostApi\Model\Api\SaleOrder $apiModelSaleOrder
+     * @param \Epoint\SwisspostApi\Model\Api\Invoice $apiModelInvoice
+     * @param \Epoint\SwisspostApi\Model\Entity $swisspostModelEntity
      */
     public function __construct(Context $context,
         ObjectManagerInterface $objectManager,
@@ -70,7 +76,8 @@ class Order extends Data
         ConvertOrder $convertOrder,
         ShipmentTrack $shipmentTrack,
         ApiModelSaleOrder $apiModelSaleOrder,
-        ApiModelInvoice $apiModelInvoice
+        ApiModelInvoice $apiModelInvoice,
+        SwisspostModelEntity $swisspostModelEntity
     ) {
         parent::__construct($context, $objectManager, $storeManager, $logger);
         $this->invoiceService = $invoiceService;
@@ -79,6 +86,7 @@ class Order extends Data
         $this->shipmentTrack = $shipmentTrack;
         $this->apiModelSaleOrder = $apiModelSaleOrder;
         $this->apiModelInvoice = $apiModelInvoice;
+        $this->swisspostModelEntity = $swisspostModelEntity;
     }
 
     /**
@@ -157,7 +165,7 @@ class Order extends Data
             $transactionSave->save();
             //send notification code
             $order->addStatusHistoryComment(
-                __('The invoice has been create from' . ' Magento-Odoo Integration module')
+                __('The invoice has been create from Magento-Odoo Integration module')
             )
                 ->save();
             return $invoice;
@@ -351,9 +359,34 @@ class Order extends Data
     }
 
     /**
+     * Will check if the order has been exported
+     * If yes -> add to the stack
+     * @param array $orderList
+     * @return array
+     */
+    public function extractExportedOrders($orderList)
+    {
+        $exportedOrders = [];
+        if (!empty($orderList)) {
+            /** @var \Magento\Sales\Model\Order  $order */
+            foreach ($orderList as $order){
+                /** @var \Epoint\SwisspostApi\Model\Entity _entity */
+                $orderID = $order->getIncrementId();
+                $entity = $this->swisspostModelEntity->loadByTypeAndLocalId(\Epoint\SwisspostApi\Model\Api\SaleOrder::ENTITY_TYPE,
+                    $this->apiModelSaleOrder->getReferenceId($orderID));
+                $orderExternalID = $entity->getExternalId();
+                if (!empty($orderExternalID) && $entity){
+                    $exportedOrders[] = $order;
+                }
+            }
+        }
+        return $exportedOrders;
+    }
+
+    /**
      * Will create a list of invoices ids from provided orders list
      *
-     * @param array $orderList
+     * @param \Magento\Sales\Model\ResourceModel\Order\Collection $orderList
      *
      * @return array
      */

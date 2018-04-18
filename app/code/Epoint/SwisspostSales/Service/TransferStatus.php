@@ -200,16 +200,21 @@ class TransferStatus extends BaseExchange
                 /** @var array \Magento\Sales\Model\Order $selectedOrders */
                 $selectedOrders = $listFactory->getSentOrders($orderStatus);
 
+                // Remove all the orders that have not been exported
+                $selectedOrders = $this->orderHelper->extractExportedOrders($selectedOrders);
+
                 // Getting the ids list for selected orders
                 $orderIdsList = $this->orderHelper->extractOrderIdsFromOrderList($selectedOrders);
 
                 // Check orders transfer status
-                $result = $this->apiResource->checkOrdersTransferStatus($orderIdsList);
+                if (count($orderIdsList) > 0) {
+                    $result = $this->apiResource->checkOrdersTransferStatus($orderIdsList);
 
-                // Processing the result
-                if ($result->isOK()) {
-                    // Run import.
-                    $this->run($result->get('values'));
+                    // Processing the result
+                    if ($result->isOK()) {
+                        // Run import.
+                        $this->run($result->get('values'));
+                    }
                 }
             }
         }
