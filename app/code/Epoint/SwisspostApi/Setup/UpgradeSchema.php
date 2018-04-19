@@ -12,11 +12,6 @@ class UpgradeSchema implements UpgradeSchemaInterface
     {
         $setup->startSetup();
 
-
-
-//        $setup->getConnection()->dropColumn($setup->getTable('epoint_swisspost_entities'), 'automatic_export');
-//        $setup->getConnection()->dropColumn($setup->getTable('epoint_swisspost_entities'), 'export_tryouts');
-
         if (version_compare($context->getVersion(), '1.0.1', '<=')) {
 
             $epointTable = $setup->getTable('epoint_swisspost_entities');
