@@ -40,12 +40,11 @@ class ApiBeforeCreateSaleOrder extends BaseObserver
 
     /**
      * ApiBeforeCreateSaleOrder constructor.
-     *
-     * @param LoggerInterface                                 $logger
-     * @param ObjectManagerInterface                          $objectManager
-     * @param ShippingHelper                                  $shippingHelper
-     * @param PaymentHelper                                   $paymentHelper
-     * @param ProductTaxHelper                                $productTaxHelper
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Epoint\SwisspostSales\Helper\Shipping $shippingHelper
+     * @param \Epoint\SwisspostSales\Helper\Payment $paymentHelper
+     * @param \Epoint\SwisspostSales\Helper\ProductTax $productTaxHelper
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      */
     public function __construct(
@@ -138,9 +137,14 @@ class ApiBeforeCreateSaleOrder extends BaseObserver
         if ($orderItem->getDescription()) {
             $item['name'] = $orderItem->getDescription();
         }
+
+        /** @var \Magento\Catalog\Model\Product $productTMP */
+        $product = $this->productRepository->get($orderItem->getSku());
+        $productTaxClassID = $product->getTaxClassId();
+
         // Setting up the product tax class
         $item['tax_id'] = [$this->productTaxHelper->getExternalTaxClassCode(
-            $orderItem->getProduct()->getTaxClassId()
+            $productTaxClassID
         )];
         return $item;
     }

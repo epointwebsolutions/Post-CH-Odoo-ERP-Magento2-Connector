@@ -70,18 +70,17 @@ class Order extends BaseExchange
             try {
                 /** @var \Epoint\SwisspostApi\Model\Api\SaleOrder $apiOrder */
                 $apiOrder = $this->saleOrderApiModel->getInstance($order);
-
+                $automaticExport = '0';
                 // Only one time can be sent.
                 if (!$apiOrder->isLocalSaved()) {
                     // Export order
                     $result = $apiOrder->save();
                     if ($result !== null && $result && $result->isOK()) {
-                        // Set connection.
+                        $externalCode = $result->get(SaleOrderApiModel::EXTERNAL_ID_CODE);
                         $apiOrder->set(
                             SaleOrderApiModel::EXTERNAL_ID_CODE,
-                            $result->get(SaleOrderApiModel::EXTERNAL_ID_CODE)
+                            $externalCode
                         );
-                        $apiOrder->connect($apiOrder->get('order_ref'));
 
                         // Status in message error.
                         $newStatus = $this->orderHelper->getExportSuccessNewStatus();
@@ -111,27 +110,25 @@ class Order extends BaseExchange
                         );
                         $order->setIsOdooResponseError(true);
                     }
+                    // Updating entity
+                    $apiOrder->set(
+                        SaleOrderApiModel::ENTITY_AUTOMATIC_EXPORT,
+                        $automaticExport
+                    );
+                    $apiOrder->connect($apiOrder->get('order_ref'));
                     // Adding the message to be displayed on order object
                     $order->setResponseMessage($message);
                     // Add message and set new status.
                     $order->setStatus($newStatus);
                     $order->setSentOdoo(true);
                     $order->addStatusToHistory($order->getStatus(), $message);
-                    $order->save();
 
                     $processed[] = $order;
-                    return $processed;
+                } else {
+                    $message = sprintf(__('Trying to resend Swisspost order'));
+                    $order->addStatusHistoryComment($message);
                 }
-
-                // Throwing exception if the order has already been saved locally (happens when the order was exported successfully before)
-                throw new \Exception(
-                    sprintf(
-                        __(
-                            'Trying to resend Swisspost order: %d'
-                        ),
-                        $order->getId()
-                    )
-                );
+                $order->save();
             } catch (\Exception $e) {
                 $this->logException($e);
             }
@@ -153,5 +150,22 @@ class Order extends BaseExchange
     public function listFactory()
     {
         return $this->listOrderModel;
+    }
+
+    /**
+     * @inheritdoc.
+     */
+    public function execute()
+    {
+        if($this->isEnabled()) {
+            /** @var \Epoint\SwisspostSales\Model\Lists\Order $listFactory */
+            $listFactory = $this->listFactory();
+            /** @var array $items */
+            $items = $listFactory->search();
+            // Run import.
+            if (count($items) > 0) {
+                $this->run($items);
+            }
+        }
     }
 }

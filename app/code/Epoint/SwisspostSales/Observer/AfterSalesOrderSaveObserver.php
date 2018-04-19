@@ -11,6 +11,7 @@ use \Magento\Framework\ObjectManagerInterface;
 use \Psr\Log\LoggerInterface;
 use Epoint\SwisspostSales\Service\Order as OrderService;
 use Epoint\SwisspostSales\Helper\Order as OrderHelper;
+use Epoint\SwisspostApi\Model\Api\SaleOrder as SaleOrderApiModel;
 
 /**
  * Sales Order save observer.
@@ -28,21 +29,29 @@ class AfterSalesOrderSaveObserver extends BaseObserver
     protected $orderHelper;
 
     /**
+     * @var \Epoint\SwisspostApi\Model\Api\SaleOrder
+     */
+    protected $saleOrderApiModel;
+
+    /**
      * AfterSalesOrderSaveObserver constructor.
-     *
-     * @param LoggerInterface        $logger
-     * @param ObjectManagerInterface $objectManager
-     * @param OrderService           $orderService
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param \Epoint\SwisspostSales\Service\Order $orderService
+     * @param \Epoint\SwisspostSales\Helper\Order $orderHelper
+     * @param \Epoint\SwisspostApi\Model\Api\SaleOrder $saleOrderApiModel
      */
     public function __construct(
         LoggerInterface $logger,
         ObjectManagerInterface $objectManager,
         OrderService $orderService,
-        OrderHelper $orderHelper
+        OrderHelper $orderHelper,
+        SaleOrderApiModel $saleOrderApiModel
     ) {
         parent::__construct($logger, $objectManager);
         $this->orderService = $orderService;
         $this->orderHelper = $orderHelper;
+        $this->saleOrderApiModel = $saleOrderApiModel;
     }
 
     /**
@@ -72,6 +81,15 @@ class AfterSalesOrderSaveObserver extends BaseObserver
                 $order->addStatusToHistory($order->getStatus(), $message);
                 $order->setSentOdoo(true);
                 $order->save();
+
+                // Save entity
+                /** @var \Epoint\SwisspostApi\Model\Api\SaleOrder $apiOrder */
+                $apiOrder = $this->saleOrderApiModel->getInstance($order);
+                $apiOrder->set(
+                    SaleOrderApiModel::ENTITY_AUTOMATIC_EXPORT,
+                    '1'
+                );
+                $apiOrder->connect($apiOrder->get('order_ref'));
             } else {
                 $this->orderService->run([$order]);
             }

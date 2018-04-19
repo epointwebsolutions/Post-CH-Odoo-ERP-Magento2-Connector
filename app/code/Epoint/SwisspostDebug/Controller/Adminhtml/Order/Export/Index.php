@@ -5,9 +5,17 @@ namespace Epoint\SwisspostDebug\Controller\Adminhtml\Order\Export;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Request\Http;
 use \Epoint\SwisspostSales\Service\Order as OrderService;
+use Psr\Log\LoggerInterface;
+use Epoint\SwisspostApi\Helper\LoggerTrait;
+use \Magento\Sales\Api\OrderRepositoryInterface;
 
 class Index extends \Magento\Backend\App\Action
 {
+    /**
+     * Epoint\SwisspostApi\Helper\LoggerTrait
+     */
+    use LoggerTrait;
+
     /**
      * @var Http $_request
      */
@@ -16,19 +24,31 @@ class Index extends \Magento\Backend\App\Action
     /**
      * @var \Epoint\SwisspostSales\Service\Order $orderService
      */
-    protected $orderService;
+    protected $_orderService;
+
+    /**
+     * @var \Magento\Sales\Api\OrderRepositoryInterface
+     */
+    protected $_orderRepository;
 
     /**
      * Index constructor.
-     *
-     * @param Context $context
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Epoint\SwisspostSales\Service\Order $orderService
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Sales\Api\OrderRepositoryInterface $orderRepository
      */
     public function __construct(
-        Context $context
+        Context $context,
+        OrderService $orderService,
+        LoggerInterface $logger,
+        OrderRepositoryInterface $orderRepository
     ) {
         parent::__construct($context);
         $this->_request = $this->getRequest();
-        $this->orderService = $this->_objectManager->get(OrderService::class);
+        $this->_orderService = $orderService;
+        $this->logger = $logger;
+        $this->_orderRepository = $orderRepository;
     }
 
     /**
@@ -45,17 +65,15 @@ class Index extends \Magento\Backend\App\Action
             throw new \Exception(__('Missing order id.'));
         }
 
-        // Creating a local order
-        $localOrder = $this->_objectManager->create(
-            \Magento\Sales\Model\Order::class
-        )->load($orderId);
+        /** @var \Magento\Sales\Model\Order $localOrder */
+        $localOrder = $this->_orderRepository->get($orderId);
 
         if (!$localOrder || !$localOrder->getId()) {
             throw new \Exception(__('Missing order.'));
         }
 
         try {
-            $processed = $this->orderService->run([$localOrder]);
+            $processed = $this->_orderService->run([$localOrder]);
             foreach ($processed as $processedOrder) {
                 // Checking if on selected order export the response has failed or not
                 if ($processedOrder->getIsOdooResponseError()) {
