@@ -370,8 +370,8 @@ class Order extends Data
         if (!empty($orderList)) {
             /** @var \Magento\Sales\Model\Order  $order */
             foreach ($orderList as $order){
-                /** @var \Epoint\SwisspostApi\Model\Entity _entity */
                 $orderID = $order->getIncrementId();
+                /** @var \Epoint\SwisspostApi\Model\Entity _entity */
                 $entity = $this->swisspostModelEntity->loadByTypeAndLocalId(\Epoint\SwisspostApi\Model\Api\SaleOrder::ENTITY_TYPE,
                     $this->apiModelSaleOrder->getReferenceId($orderID));
                 $orderExternalID = $entity->getExternalId();
@@ -381,6 +381,31 @@ class Order extends Data
             }
         }
         return $exportedOrders;
+    }
+
+    /**
+     * Will check if the flag for automatic export is true or false
+     * If is true the order will be added to the stack
+     * @param array $orderList
+     * @return array
+     */
+    public function extractOrdersAvailableForExport($orderList)
+    {
+        $availableForExport = [];
+        if (!empty($orderList)) {
+            /** @var \Magento\Sales\Model\Order  $order */
+            foreach ($orderList as $order){
+                $orderID = $order->getIncrementId();
+                /** @var \Epoint\SwisspostApi\Model\Entity _entity */
+                $entity = $this->swisspostModelEntity->loadByTypeAndLocalId(\Epoint\SwisspostApi\Model\Api\SaleOrder::ENTITY_TYPE,
+                    $this->apiModelSaleOrder->getReferenceId($orderID));
+                $orderExportFlag = $entity->getAutomaticExport();
+                if ($orderExportFlag && $entity){
+                    $availableForExport[] = $order;
+                }
+            }
+        }
+        return $availableForExport;
     }
 
     /**

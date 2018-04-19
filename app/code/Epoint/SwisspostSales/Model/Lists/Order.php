@@ -48,8 +48,8 @@ class Order
         $collection = $this->collectionFactory->create();
         $collection->addAttributeToSelect('*');
         $collection->getSelect()->where(
-            ' CONVERT(main_table.increment_id, CHAR(32)) NOT IN 
-        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '")'
+            ' CONVERT(main_table.increment_id, CHAR(32)) IN 
+        (SELECT local_id FROM epoint_swisspost_entities WHERE `type`="' . SaleOrder::ENTITY_TYPE . '" AND automatic_export=1)'
         );
 
         // Add status filter.

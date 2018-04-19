@@ -13,7 +13,7 @@ use Epoint\SwisspostApi\Model\Api\AnonymousAccount as ApiModelAnonymousAccount;
 class SaleOrder extends ApiDataObject implements Data\Entity
 {
     /**
-     * Product external id key.
+     * Order external id key.
      * @const EXTERNAL_ID_CODE
      */
     const EXTERNAL_ID_CODE = 'odoo_id';
@@ -23,6 +23,16 @@ class SaleOrder extends ApiDataObject implements Data\Entity
      * @const ENTITY_TYPE
      */
     const ENTITY_TYPE = 'order';
+
+    /**
+     * @const ENTITY_AUTOMATIC_EXPORT
+     */
+    const ENTITY_AUTOMATIC_EXPORT = 'automatic_export';
+
+    /**
+     * @const ENTITY_EXPORT_TRYOUTS
+     */
+    const ENTITY_EXPORT_TRYOUTS = 'export_tryouts';
 
     /**
      * Entity.
@@ -110,22 +120,24 @@ class SaleOrder extends ApiDataObject implements Data\Entity
         }
         /** @var \Epoint\SwisspostApi\Model\Api\Address $address */
         $address = null;
-        // Billing address
-        if ($order->getBillingAddress()){
-            /** @var \Magento\Customer\Model\Address $localBillingAddress */
-            $localBillingAddress = null;
-            // Checking if the customer is anonymous or not
-            if (empty($order->getCustomerIsGuest()) && $order->getCustomerID()){
+
+        // Checking if the customer is anonymous or not
+        if (empty($order->getCustomerIsGuest()) && $order->getCustomerID()){
+            if ($order->getBillingAddress()->getCustomerAddressId() !== null) {
                 $localBillingAddress = $this->objectManager->create(
                     \Magento\Customer\Model\Address::class
                 )->load($order->getBillingAddress()->getCustomerAddressId());
-                $address = $this->apiModelAddress->getInstance($localBillingAddress);
             } else {
-                $localBillingAddress = $order->getBillingAddress();
-                $address = $this->apiModelAddress->getInstanceForAnonymousCustomer($localBillingAddress);
+                $localBillingAddress = $this->objectManager->create(
+                    \Magento\Customer\Model\Address::class
+                )->load($order->getShippingAddress()->getCustomerAddressId());
             }
-            $apiObject->set('address_invoice', $address->getData());
+            $address = $this->apiModelAddress->getInstance($localBillingAddress);
+        } else {
+            $localBillingAddress = $order->getBillingAddress();
+            $address = $this->apiModelAddress->getInstanceForAnonymousCustomer($localBillingAddress);
         }
+        $apiObject->set('address_invoice', $address->getData());
 
         // Shipping address
         if ($order->getShippingAddress()) {
@@ -302,20 +314,39 @@ class SaleOrder extends ApiDataObject implements Data\Entity
      */
     public function connect($localId)
     {
-        if (!$this->getExternalId()) {
-            throw new \Exception(__('Missing external id.'));
-        }
         if (!$localId) {
             throw new \Exception(__('Missing local id.'));
         }
+
         if (!$this->_entity) {
             $savedLocalId = $this->getLocalId();
             if ($savedLocalId && $savedLocalId != $localId) {
                 throw new \Exception(__('Entity conflict on save.'));
             }
         }
+
+        // External code
+        if (!$this->getExternalId()) {
+            $this->_entity->setExternalId('');
+        } else {
+            $this->_entity->setExternalId($this->getExternalId());
+        }
+
         $this->_entity->setType(self::ENTITY_TYPE);
-        $this->_entity->setExternalId($this->getExternalId());
+
+        // Automatic export flag
+        // Default
+        $this->_entity->setAutomaticExport('0');
+        if ($this->get(self::ENTITY_AUTOMATIC_EXPORT)) {
+            $this->_entity->setAutomaticExport($this->get(self::ENTITY_AUTOMATIC_EXPORT));
+        }
+        // Export tryouts
+        // Default
+        $this->_entity->setExportTryouts('0');
+        if ($this->get(self::ENTITY_EXPORT_TRYOUTS)) {
+            $this->_entity->setExportTryouts($this->get(self::ENTITY_EXPORT_TRYOUTS));
+        }
+
         $this->_entity->setLocalId($localId);
         $this->_entity->save();
     }
